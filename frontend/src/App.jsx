@@ -12,12 +12,15 @@ function App() {
   const handleCalculate = async () => {
     setIsLoading(true);
     setResult(null);
-
-    const currentReferences = [levels[0], levels[levels.length - 1]]; 
+    
+    const currentReferences = {
+      [levels[0]]: 0, 
+      [levels[levels.length - 1]]: 1
+    };
 
     const payload = {
-      name: criterionName || "Criterio sin nombre",
-      labels: levels,
+      criterion_name: criterionName || "Criterio sin nombre",
+      levels: levels,
       blank_cards: blankCards,
       references: currentReferences
     };
