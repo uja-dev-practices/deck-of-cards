@@ -1,9 +1,54 @@
 import { useState } from 'react';
 
 function App() {
+
   const [criterionName, setCriterionName] = useState('');
   const [levels, setLevels] = useState(['', '', '']);
   const [blankCards, setBlankCards] = useState([0, 0]);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [result, setResult] = useState(null);
+
+  const handleCalculate = async () => {
+    setIsLoading(true);
+    setResult(null);
+
+    const currentReferences = [levels[0], levels[levels.length - 1]]; 
+
+    const payload = {
+      name: criterionName || "Criterio sin nombre",
+      labels: levels,
+      blank_cards: blankCards,
+      references: currentReferences
+    };
+
+    console.log("Enviando JSON al backend:", payload);
+
+    try {
+      const response = await fetch('http://localhost:8000/api/criteria/doc/value-function', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error del servidor: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("Respuesta del backend:", data);
+      setResult(data); 
+
+    } catch (error) {
+      console.error("Error al hacer la petición:", error);
+      alert("No se ha podido conectar con el backend.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
 
   const handleLevelChange = (index, newValue) => {
     const newLevels = [...levels];
@@ -138,6 +183,30 @@ function App() {
         </div>
 
       </div>
+
+      {/* --- NUEVO: BOTÓN DE CALCULAR --- */}
+        <div className="w-full max-w-lg mt-12 pt-8 border-t-2 border-slate-200 flex flex-col items-center">
+          <button
+            onClick={handleCalculate}
+            disabled={isLoading}
+            className={`w-full py-4 text-white text-xl font-bold rounded-xl shadow-lg transition-all active:scale-[0.98] ${
+              isLoading ? 'bg-slate-400 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 hover:shadow-xl'
+            }`}
+          >
+            {isLoading ? 'Calculando...' : 'Calcular Valores DoC'}
+          </button>
+        </div>
+
+        {/* --- NUEVO: CAJA PARA VER EL RESULTADO (TEMPORAL PARA DEBUG) --- */}
+        {result && (
+          <div className="w-full max-w-2xl mt-8 p-6 bg-slate-800 text-green-400 rounded-xl overflow-x-auto shadow-inner">
+            <h3 className="text-white font-bold mb-2">Respuesta del Backend:</h3>
+            <pre className="text-sm font-mono">
+              {JSON.stringify(result, null, 2)}
+            </pre>
+          </div>
+        )}
+
     </div>
   );
 }
