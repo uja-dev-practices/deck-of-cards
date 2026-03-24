@@ -146,18 +146,35 @@ def evaluate_doc_mf(request: EvaluationRequest):
     c, d = request.support
 
     if x < c or x > d:
-        return {"membership": 0.0}
+        return {
+            "membership": 0.0,
+            "explanation": "El valor está fuera del soporte, por eso la pertenencia es 0."
+        }
 
     if a <= x <= b:
-        return {"membership": 1.0}
+        return {
+            "membership": 1.0,
+            "explanation": "El valor está dentro del núcleo, por eso la pertenencia es 1."
+        }
 
     if c <= x < a:
-        return {"membership": linear_interpolation(x, request.left_nodes)}
+        mu = linear_interpolation(x, request.left_nodes)
+        return {
+            "membership": mu,
+            "explanation": "El valor está en el lado izquierdo y se interpola entre nodos."
+        }
 
     if b < x <= d:
-        return {"membership": linear_interpolation(x, request.right_nodes)}
+        mu = linear_interpolation(x, request.right_nodes)
+        return {
+            "membership": mu,
+            "explanation": "El valor está en el lado derecho y se interpola entre nodos."
+        }
 
-    return {"membership": 0.0}
+    return {
+        "membership": 0.0,
+        "explanation": "No se pudo determinar la pertenencia."
+    }
 
 
 # -----------------------------
