@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { calculateValueFunction } from './services/docService';
 
 function App() {
 
@@ -29,28 +30,11 @@ function App() {
       references: currentReferences
     };
 
-    console.log("Enviando JSON al backend:", payload);
-
     try {
-      const response = await fetch('http://localhost:8000/api/criteria/doc/value-function', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error del servidor: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log("Respuesta del backend:", data);
+      const data = await calculateValueFunction(payload);
       setResult(data); 
-
     } catch (error) {
-      console.error("Error al hacer la petición:", error);
-      alert("No se ha podido conectar con el backend.");
+      alert("No se ha podido conectar con el backend: " + error);
     } finally {
       setIsLoading(false);
     }
