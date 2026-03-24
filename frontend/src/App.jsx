@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 function App() {
 
@@ -102,12 +103,12 @@ function App() {
         />
       </div>
 
-      {/* TIMELINE VERTICAL CON CARTAS REALES */}
+      {/* TIMELINE VERTICAL */}
       <div className="w-full max-w-lg flex flex-col items-center">
         {levels.map((level, index) => (
           <div key={index} className="w-full flex flex-col items-center">
             
-            {/* 1. LA CARTA DE NIVEL (Recuperando el diseño de naipe) */}
+            {/* CARTA DE NIVEL (etiqueta) */}
             <div className="relative w-72 h-44 bg-white border-2 border-slate-200 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex flex-col items-center justify-center transition-transform hover:-translate-y-1 hover:shadow-[0_12px_40px_rgb(0,0,0,0.12)] group">
               
               {/* Botón Eliminar */}
@@ -121,7 +122,7 @@ function App() {
                 </button>
               )}
 
-              {/* Detalles tipo naipe (Esquinas) */}
+              {/* Detalles tipo naipe */}
               <span className="absolute top-4 left-4 text-sm font-black text-slate-300">
                 {index + 1}
               </span>
@@ -129,7 +130,6 @@ function App() {
                 {index + 1}
               </span>
 
-              {/* Input centrado */}
               <input
                 type="text"
                 placeholder="Escribe aquí..."
@@ -139,7 +139,7 @@ function App() {
               />
             </div>
 
-            {/* 2. EL CONECTOR Y CARTAS BLANCAS */}
+            {/* CONECTOR Y CARTAS BLANCAS */}
             {index < levels.length - 1 && (
               <div className="flex flex-col items-center my-2 w-full">
                 <div className="w-0.5 h-6 bg-slate-300"></div>
@@ -177,7 +177,7 @@ function App() {
           </div>
         ))}
 
-        {/* 3. BOTÓN AÑADIR */}
+        {/* BOTÓN AÑADIR */}
         <div className="w-72 mt-6">
           <button
             onClick={handleAddLevel}
@@ -190,7 +190,7 @@ function App() {
 
       </div>
 
-      {/* --- NUEVO: BOTÓN DE CALCULAR --- */}
+      {/* BOTÓN DE CALCULAR */}
         <div className="w-full max-w-lg mt-12 pt-8 border-t-2 border-slate-200 flex flex-col items-center">
           <button
             onClick={handleCalculate}
@@ -202,6 +202,57 @@ function App() {
             {isLoading ? 'Calculando...' : 'Calcular Valores DoC'}
           </button>
         </div>
+
+        {/* GRÁFICA */}
+        {result && (
+          <div className="w-full max-w-4xl mt-12 p-8 bg-white rounded-2xl shadow-xl border border-slate-100">
+            <h3 className="text-2xl font-bold text-slate-800 mb-8 text-center">
+              Función de Valor: {result.criterion_name}
+            </h3>
+            
+            <div className="w-full mt-4">
+              <ResponsiveContainer width="100%" height={400}>
+                <LineChart
+                  data={Object.entries(result.values).map(([label, value]) => ({
+                    nombre: label,
+                    valor: value
+                  }))}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                  
+                  <XAxis 
+                    dataKey="nombre" 
+                    tick={{ fill: '#475569', fontWeight: 600 }} 
+                    dy={10}
+                  />
+                  
+                  <YAxis 
+                    domain={[0, 1]} 
+                    tick={{ fill: '#475569' }} 
+                    dx={-10}
+                  />
+                  
+                  <Tooltip
+                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                    formatter={(value) => [value.toFixed(4), 'Valor DoC']}
+                    labelStyle={{ fontWeight: 'bold', color: '#1e293b', marginBottom: '4px' }}
+                  />
+                  
+                  <Line
+                    type="monotone"
+                    dataKey="valor"
+                    stroke="#2563eb"
+                    strokeWidth={4}
+                    activeDot={{ r: 8, strokeWidth: 0 }}
+                    dot={{ r: 6, fill: '#2563eb', stroke: '#ffffff', strokeWidth: 2 }}
+                    animationDuration={1500}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        )}
 
     </div>
   );
