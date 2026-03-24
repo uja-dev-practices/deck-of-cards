@@ -12,10 +12,13 @@ function App() {
   const handleCalculate = async () => {
     setIsLoading(true);
     setResult(null);
+
+    const firstIndex = "0";
+    const lastIndex = (levels.length - 1).toString();
     
     const currentReferences = {
-      [levels[0]]: 0, 
-      [levels[levels.length - 1]]: 1
+      [firstIndex]: 0, 
+      [lastIndex]: 1
     };
 
     const payload = {
@@ -199,16 +202,6 @@ function App() {
             {isLoading ? 'Calculando...' : 'Calcular Valores DoC'}
           </button>
         </div>
-
-        {/* --- NUEVO: CAJA PARA VER EL RESULTADO (TEMPORAL PARA DEBUG) --- */}
-        {result && (
-          <div className="w-full max-w-2xl mt-8 p-6 bg-slate-800 text-green-400 rounded-xl overflow-x-auto shadow-inner">
-            <h3 className="text-white font-bold mb-2">Respuesta del Backend:</h3>
-            <pre className="text-sm font-mono">
-              {JSON.stringify(result, null, 2)}
-            </pre>
-          </div>
-        )}
 
     </div>
   );
