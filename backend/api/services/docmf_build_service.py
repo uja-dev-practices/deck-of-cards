@@ -1,4 +1,4 @@
-def build_docmf(request):
+def build_single_docmf(request):
     a, b = request.core
     c, d = request.support
 
@@ -35,3 +35,11 @@ def build_docmf(request):
         "left_nodes": left_nodes,
         "right_nodes": right_nodes
     }
+
+
+def build_docmf_multi(request):
+    results = []
+    for level in request.levels:
+        result = build_single_docmf(level)
+        results.append(result)
+    return {"results": results}

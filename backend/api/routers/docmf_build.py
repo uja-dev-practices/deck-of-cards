@@ -1,12 +1,12 @@
 from fastapi import APIRouter, HTTPException
-from models.docmf_models import DoCMFRequest
-from services.docmf_build_service import build_docmf
+from models.docmf_models import DoCMFMultiRequest
+from services.docmf_build_service import build_docmf_multi
 
 router = APIRouter()
 
 @router.post("/build")
-def build(request: DoCMFRequest):
+def build(request: DoCMFMultiRequest):
     try:
-        return build_docmf(request)
+        return build_docmf_multi(request)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

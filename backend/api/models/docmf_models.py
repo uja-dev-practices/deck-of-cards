@@ -41,3 +41,7 @@ class DoCMFRequest(BaseModel):
         if any(c < 0 for c in v):
             raise ValueError("Las cartas no pueden ser negativas.")
         return v
+
+
+class DoCMFMultiRequest(BaseModel):
+    levels: List[DoCMFRequest]
