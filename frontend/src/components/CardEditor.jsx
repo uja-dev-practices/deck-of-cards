@@ -5,7 +5,7 @@ export default function CardEditor({ index, level, handleLevelChange, handleRemo
         error ? 'border-red-400 shadow-red-100' : 'border-slate-200'
       }`}>
         {/* Botón para eliminar */}
-        {totalLevels > 2 && (
+        {totalLevels > 3 && (
           <button
             onClick={() => handleRemoveLevel(index)}
             className="absolute -top-3 -right-3 w-8 h-8 bg-white text-slate-400 rounded-full border border-slate-200 flex items-center justify-center font-bold hover:bg-red-500 hover:text-white hover:border-red-500 transition-colors z-10 opacity-0 group-hover:opacity-100 shadow-sm"
@@ -38,7 +38,7 @@ export default function CardEditor({ index, level, handleLevelChange, handleRemo
           </p>
         )}
       </div>
-      
+
     </div>
   );
 }
