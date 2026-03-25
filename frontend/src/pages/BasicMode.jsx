@@ -81,7 +81,7 @@ export default function BasicMode() {
     };
 
     const handleRemoveLevel = (indexToRemove) => {
-        if (levels.length <= 2) return; 
+        if (levels.length <= 3) return; 
         const newLevels = levels.filter((_, index) => index !== indexToRemove);
         const blankIndexToRemove = indexToRemove === 0 ? 0 : indexToRemove - 1;
         const newBlankCards = blankCards.filter((_, index) => index !== blankIndexToRemove);
