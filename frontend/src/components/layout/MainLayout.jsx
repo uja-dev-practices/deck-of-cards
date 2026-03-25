@@ -22,7 +22,7 @@ export const MainLayout = () => {
                 }`
                 }
             >
-                DoC Clásico
+                DoC Básico
             </NavLink>
             
             <NavLink
