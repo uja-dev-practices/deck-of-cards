@@ -13,16 +13,13 @@ export default function AdvancedMode() {
   const [step, setStep] = useState(1); 
   const [isLoading, setIsLoading] = useState(false);
 
-  // Estados Fase 1 (Escala)
   const [criterionName, setCriterionName] = useState('');
   const [levels, setLevels] = useState(['', '', '']); 
   const [blankCards, setBlankCards] = useState([0, 0]);
   const [errors, setErrors] = useState({ criterion: false, levels: [] });
   
-  // Estado para controlar la lupa (Zoom)
   const [isZoomActive, setIsZoomActive] = useState(true);
 
-  // Medición exacta con Refs
   const containerRef = useRef(null);
   const tableRef = useRef(null);
   const [dimensions, setDimensions] = useState({ container: 1000, table: 0 });
@@ -136,7 +133,13 @@ export default function AdvancedMode() {
               Paso 1: Escala de Referencia (Mesa)
             </h2>
             {needsZoom && (
-              <button onClick={() => setIsZoomActive(!isZoomActive)} className={`flex items-center gap-2 px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm border text-sm ${isZoomActive ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-white border-slate-200 text-slate-600'}`}>
+              <button 
+                onClick={() => {
+                  if (containerRef.current) containerRef.current.scrollLeft = 0;
+                  setIsZoomActive(!isZoomActive);
+                }} 
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm border text-sm ${isZoomActive ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-white border-slate-200 text-slate-600'}`}
+              >
                 <span>{isZoomActive ? '🔍' : '🖼️'}</span>
                 {isZoomActive ? 'Ver de cerca (Scroll)' : 'Ajustar mesa'}
               </button>
@@ -152,15 +155,12 @@ export default function AdvancedMode() {
                 
                 {levels.map((level, index) => (
                   <React.Fragment key={index}>
-                    
                     <div className="flex flex-col items-center mx-2 my-2 relative z-20">
                       <CardEditor index={index} level={level} handleLevelChange={handleLevelChange} handleRemoveLevel={handleRemoveLevel} totalLevels={levels.length} error={errors.levels[index]} canRemove={levels.length > 3} />
                     </div>
-                    
                     {index < levels.length - 1 && (
                       <BlankCardsCounter index={index} blankCardsCount={blankCards[index]} handleBlankCardChange={handleBlankCardChange} />
                     )}
-
                   </React.Fragment>
                 ))}
                 
