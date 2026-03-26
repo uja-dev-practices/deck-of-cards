@@ -3,8 +3,8 @@ import CriterionInput from '../components/CriterionInput';
 import CardEditor from '../components/CardEditor';
 import BlankCardsCounter from '../components/BlankCardsCounter';
 import AddLevelButton from '../components/AddLevelButton';
-import MembershipFunctionChart from '../components/membershipFunction/Chart';
-import MembershipFunctionControls from '../components/membershipFunction/Controls';
+import Chart from '../components/membershipFunction/Chart';
+import Controls from '../components/membershipFunction/Controls';
 import { calculateValueFunction } from '../services/docService';
 
 const COLORS = ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#d946ef', '#06b6d4', '#8b5cf6', '#f43f5e', '#6366f1'];
@@ -24,7 +24,7 @@ export default function AdvancedMode() {
   const [selectedTerm, setSelectedTerm] = useState(null);
   const [mfDefinitions, setMfDefinitions] = useState({});
 
-  // --- Manejadores de Escala ---
+  // Manejadores de Escala
   const handleCriterionChange = (val) => { setCriterionName(val); if (errors.criterion) setErrors({ ...errors, criterion: false }); };
   const handleLevelChange = (index, newValue) => { const newLevels = [...levels]; newLevels[index] = newValue; setLevels(newLevels); if (errors.levels[index]) setErrors({ ...errors, levels: errors.levels.map((e, i) => i === index ? false : e) }); };
   const handleAddLevel = () => { setLevels([...levels, '']); setBlankCards([...blankCards, 0]); setErrors({ ...errors, levels: [...errors.levels, false] }); };
@@ -32,9 +32,11 @@ export default function AdvancedMode() {
   const handleBlankCardChange = (index, delta) => { const newCards = [...blankCards]; if (newCards[index] + delta >= 0) { newCards[index] += delta; setBlankCards(newCards); } };
 
   const handleGenerateBaseScale = async () => {
-    let hasError = false;
     const newErrors = { criterion: !criterionName.trim(), levels: levels.map(l => !l.trim()) };
-    if (newErrors.criterion || newErrors.levels.includes(true)) { setErrors(newErrors); return alert("Por favor, rellena todos los campos."); }
+    if (newErrors.criterion || newErrors.levels.includes(true)) { 
+      setErrors(newErrors); 
+      return alert("Por favor, rellena todos los campos."); 
+    }
 
     setIsLoading(true);
     try {
@@ -51,17 +53,38 @@ export default function AdvancedMode() {
     } catch (error) { alert("Error: " + error); } finally { setIsLoading(false); }
   };
 
-  // --- Manejadores de Franjas ---
+  // Manejadores de Franjas
   const updateCurrentMf = (field, value) => {
     if (!selectedTerm) return;
-    const numValue = parseFloat(value);
+    let numValue = parseFloat(value);
     
     setMfDefinitions(prev => {
+      const scaleKeys = Object.keys(baseScale);
+      const selectedIndex = scaleKeys.indexOf(selectedTerm);
+      
+      let prevCoreEnd = 0, prevSupportEnd = 0, nextCoreStart = 1, nextSupportStart = 1;
+
+      if (selectedIndex > 0) {
+        prevCoreEnd = prev[scaleKeys[selectedIndex - 1]].coreEnd;
+        prevSupportEnd = prev[scaleKeys[selectedIndex - 1]].supportEnd;
+      }
+      if (selectedIndex < scaleKeys.length - 1) {
+        nextCoreStart = prev[scaleKeys[selectedIndex + 1]].coreStart;
+        nextSupportStart = prev[scaleKeys[selectedIndex + 1]].supportStart;
+      }
+
+      if (field === 'supportStart' && numValue < prevCoreEnd) numValue = prevCoreEnd;
+      if (field === 'coreStart' && numValue < prevSupportEnd) numValue = prevSupportEnd;
+      if (field === 'coreEnd' && numValue > nextSupportStart) numValue = nextSupportStart;
+      if (field === 'supportEnd' && numValue > nextCoreStart) numValue = nextCoreStart;
+
       const current = { ...prev[selectedTerm], [field]: numValue };
+      
       if (field === 'supportStart' && current.supportStart > current.coreStart) current.coreStart = current.supportStart;
       if (field === 'coreStart') { if (current.coreStart < current.supportStart) current.supportStart = current.coreStart; if (current.coreStart > current.coreEnd) current.coreEnd = current.coreStart; }
       if (field === 'coreEnd') { if (current.coreEnd < current.coreStart) current.coreStart = current.coreEnd; if (current.coreEnd > current.supportEnd) current.supportEnd = current.coreEnd; }
       if (field === 'supportEnd' && current.supportEnd < current.coreEnd) current.coreEnd = current.supportEnd;
+
       return { ...prev, [selectedTerm]: current };
     });
   };
@@ -74,6 +97,7 @@ export default function AdvancedMode() {
   // Variables calculadas
   const scaleKeys = Object.keys(baseScale);
   const selectedColor = COLORS[scaleKeys.indexOf(selectedTerm) % COLORS.length] || '#2563eb';
+
 
   return (
     <div className="w-full flex flex-col items-center">
@@ -122,10 +146,16 @@ export default function AdvancedMode() {
             })}
           </div>
 
-          <MembershipFunctionChart baseScale={baseScale} mfDefinitions={mfDefinitions} selectedTerm={selectedTerm} colors={COLORS} />
+          <Chart baseScale={baseScale} mfDefinitions={mfDefinitions} selectedTerm={selectedTerm} colors={COLORS} />
 
-          <MembershipFunctionControls selectedTerm={selectedTerm} currentMf={mfDefinitions[selectedTerm]} selectedColor={selectedColor} baseScale={baseScale} updateCurrentMf={updateCurrentMf} />
-
+          <Controls 
+            selectedTerm={selectedTerm} 
+            currentMf={mfDefinitions[selectedTerm]} 
+            selectedColor={selectedColor} 
+            baseScale={baseScale} 
+            mfDefinitions={mfDefinitions}
+            updateCurrentMf={updateCurrentMf} 
+          />
           <div className="w-full mt-12 flex justify-center">
             <button onClick={handleFinalSubmit} className="px-12 py-4 bg-slate-900 text-white text-xl font-bold rounded-xl shadow-lg hover:bg-black hover:shadow-xl transition-all">
               Guardar Todo el Espectro Difuso

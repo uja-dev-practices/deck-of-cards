@@ -1,7 +1,7 @@
 import React from 'react';
 import { ComposedChart, Line, XAxis, YAxis, CartesianGrid, ReferenceArea, ReferenceLine, ResponsiveContainer, Tooltip } from 'recharts';
 
-export default function MembershipFunctionChart({ baseScale, mfDefinitions, selectedTerm, colors }) {
+export default function Chart({ baseScale, mfDefinitions, selectedTerm, colors }) {
   const scaleKeys = Object.keys(baseScale);
 
   return (
