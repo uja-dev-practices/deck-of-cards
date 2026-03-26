@@ -151,7 +151,7 @@ export default function AdvancedMode() {
 
           <CriterionInput criterionName={criterionName} setCriterionName={handleCriterionChange} error={errors.criterion} />
           
-          <div ref={containerRef} className={`w-full mt-2 pb-4 pt-4 transition-all relative ${!isZoomActive && needsZoom ? 'overflow-x-auto flex justify-start px-4' : 'overflow-hidden flex justify-center'}`}>
+          <div ref={containerRef} className={`w-full mt-2 transition-all relative ${!isZoomActive && needsZoom ? 'overflow-x-auto flex justify-start pb-8 pt-4 px-4' : 'overflow-hidden flex justify-center pb-8 pt-4'}`}>
             <div className={`flex flex-row items-start min-w-max transition-transform duration-500 ease-out px-4 origin-top`} style={{ transform: `scale(${currentScale})`, marginBottom: isZoomActive && currentScale < 1 ? `-${(1 - currentScale) * 300}px` : '0px' }}>
               
               <div ref={tableRef} className="flex flex-row items-start relative px-10 overflow-visible">
@@ -187,7 +187,7 @@ export default function AdvancedMode() {
 
       {/* PASO 2 */}
       {step === 2 && (
-        <div className="w-full max-w-6xl bg-white p-6 rounded-2xl shadow-sm border border-slate-200 animate-fade-in relative overflow-visible">
+        <div className="w-full bg-white p-6 rounded-2xl shadow-sm border border-slate-200 animate-fade-in relative overflow-visible">
           <div className="flex justify-between items-center mb-6 border-b pb-3">
             <h2 className="text-xl font-bold text-slate-800">Paso 2: Modelar Conceptos Difusos</h2>
             <button onClick={() => setStep(1)} className="text-slate-500 hover:text-blue-600 text-sm font-semibold underline">← Volver a las cartas</button>
