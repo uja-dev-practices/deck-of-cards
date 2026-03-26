@@ -1,49 +1,24 @@
-import { Outlet, NavLink } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
-export const MainLayout = () => {
+export default function MainLayout() {
   return (
-    <div className="min-h-screen bg-slate-50 p-8 font-sans text-slate-800 flex flex-col items-center">
-      
-        <header className="text-center mb-8 flex flex-col items-center gap-6">
-            <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
-            Método <span className="text-blue-600">Deck of Cards</span>
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
+        {/* Cabecera */}
+        <header className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+            <div className="max-w-7xl mx-auto px-4 h-14 flex items-center gap-3">
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-inner">
+                <span className="text-white font-black text-xl leading-none">DoC</span>
+            </div>
+            <h1 className="text-xl font-bold text-slate-800">
+                Deck of Cards Method
             </h1>
+            </div>
         </header>
 
-        <div className="flex justify-center mb-10 w-full">
-            <div className="bg-slate-200/60 p-1.5 rounded-2xl flex gap-2 shadow-inner">
-            <NavLink
-                to="/basico"
-                className={({ isActive }) =>
-                `px-8 py-3 rounded-xl font-bold transition-all duration-300 ${
-                    isActive
-                    ? 'bg-white text-blue-600 shadow-md transform scale-105' 
-                    : 'text-slate-500 hover:text-slate-700 hover:bg-slate-300/50'
-                }`
-                }
-            >
-                DoC Básico
-            </NavLink>
-            
-            <NavLink
-                to="/avanzado"
-                className={({ isActive }) =>
-                `px-8 py-3 rounded-xl font-bold transition-all duration-300 ${
-                    isActive
-                    ? 'bg-white text-blue-600 shadow-md transform scale-105' 
-                    : 'text-slate-500 hover:text-slate-700 hover:bg-slate-300/50'
-                }`
-                }
-            >
-                DoC-MF Avanzado
-            </NavLink>
-            </div>
-        </div>
-
-        <main className="w-full flex flex-col items-center">
+        {/* Contenido principal */}
+        <main className="max-w-7xl mx-auto px-4 py-6">
             <Outlet />
         </main>
-
     </div>
   );
-};
+}
