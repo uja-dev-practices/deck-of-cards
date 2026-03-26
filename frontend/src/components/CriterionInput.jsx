@@ -1,27 +1,29 @@
 export default function CriterionInput({ criterionName, setCriterionName, error }) {
   return (
-    <div className="w-full max-w-2xl bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-12">
-      <label className="block text-sm font-bold text-slate-400 uppercase tracking-widest mb-2 text-center">
-        Nombre del Criterio
+    <div className="flex flex-row items-center justify-center gap-3 w-full z-30 relative mb-2">
+      <label className="text-sm font-bold text-slate-600 uppercase tracking-wide whitespace-nowrap">
+        Nombre del Criterio:
       </label>
-      <input
-        type="text"
-        placeholder="Ej. Calidad del aceite..."
-        value={criterionName}
-        onChange={(e) => setCriterionName(e.target.value)}
-        className={`w-full text-3xl font-bold p-2 text-center text-slate-700 border-b-2 outline-none transition-colors ${
-          error 
-            ? 'border-red-400 focus:border-red-500' 
-            : 'border-transparent hover:border-slate-200 focus:border-blue-500'
-        }`}
-      />
       
-      {error && (
-        <p className="text-red-500 text-sm font-semibold text-center mt-2 animate-pulse">
-          El nombre del criterio es obligatorio
-        </p>
-      )}
-      
+      <div className="relative w-72">
+        <input
+          type="text"
+          placeholder="Ej: Calidad del código"
+          value={criterionName}
+          onChange={(e) => setCriterionName(e.target.value)}
+          className={`w-full px-4 py-1.5 rounded-lg border-2 font-bold outline-none transition-all ${
+            error 
+              ? 'border-red-400 focus:border-red-500 bg-red-50 text-red-700 placeholder:text-red-300' 
+              : 'border-slate-200 focus:border-blue-400 bg-slate-50 text-slate-800'
+          }`}
+        />
+        
+        {error && (
+          <span className="absolute top-1/2 -right-24 -translate-y-1/2 text-xs font-bold text-red-500 animate-pulse whitespace-nowrap">
+            * Obligatorio
+          </span>
+        )}
+      </div>
     </div>
   );
 }

@@ -13,13 +13,16 @@ export default function AdvancedMode() {
   const [step, setStep] = useState(1); 
   const [isLoading, setIsLoading] = useState(false);
 
+  // Estados Fase 1 (Escala)
   const [criterionName, setCriterionName] = useState('');
   const [levels, setLevels] = useState(['', '', '']); 
   const [blankCards, setBlankCards] = useState([0, 0]);
   const [errors, setErrors] = useState({ criterion: false, levels: [] });
   
+  // Estado para controlar la lupa (Zoom)
   const [isZoomActive, setIsZoomActive] = useState(true);
 
+  // Medición exacta con Refs
   const containerRef = useRef(null);
   const tableRef = useRef(null);
   const [dimensions, setDimensions] = useState({ container: 1000, table: 0 });
@@ -148,7 +151,7 @@ export default function AdvancedMode() {
 
           <CriterionInput criterionName={criterionName} setCriterionName={handleCriterionChange} error={errors.criterion} />
           
-          <div ref={containerRef} className={`w-full mt-6 transition-all relative ${!isZoomActive && needsZoom ? 'overflow-x-auto flex justify-start pb-8 pt-8 px-4' : 'overflow-hidden flex justify-center pb-8 pt-8'}`}>
+          <div ref={containerRef} className={`w-full mt-2 pb-4 pt-4 transition-all relative ${!isZoomActive && needsZoom ? 'overflow-x-auto flex justify-start px-4' : 'overflow-hidden flex justify-center'}`}>
             <div className={`flex flex-row items-start min-w-max transition-transform duration-500 ease-out px-4 origin-top`} style={{ transform: `scale(${currentScale})`, marginBottom: isZoomActive && currentScale < 1 ? `-${(1 - currentScale) * 300}px` : '0px' }}>
               
               <div ref={tableRef} className="flex flex-row items-start relative px-10 overflow-visible">
