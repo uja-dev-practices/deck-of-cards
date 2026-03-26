@@ -19,6 +19,9 @@ export default function AdvancedMode() {
   const [blankCards, setBlankCards] = useState([0, 0]);
   const [errors, setErrors] = useState({ criterion: false, levels: [] });
   
+  // Estado para controlar la lupa (Zoom)
+  const [isZoomActive, setIsZoomActive] = useState(true);
+
   // Estados Fase 2 (Franjas)
   const [baseScale, setBaseScale] = useState({}); 
   const [selectedTerm, setSelectedTerm] = useState(null);
@@ -94,31 +97,68 @@ export default function AdvancedMode() {
     alert("¡Mira la consola! JSON preparado.");
   };
 
-  // Variables calculadas
   const scaleKeys = Object.keys(baseScale);
   const selectedColor = COLORS[scaleKeys.indexOf(selectedTerm) % COLORS.length] || '#2563eb';
 
+  const totalElements = levels.length;
+  const dynamicScale = totalElements > 6 ? 6.2 / totalElements : 1;
+  const currentScale = isZoomActive ? Math.max(0.4, dynamicScale) : 1;
 
   return (
     <div className="w-full flex flex-col items-center">
       
-      {/* --- PASO 1 --- */}
+      {/* PASO 1 */}
       {step === 1 && (
-        <div className="w-full bg-white p-8 rounded-3xl shadow-sm border border-slate-200 mb-12 flex flex-col items-center animate-fade-in">
-          <h2 className="text-2xl font-bold text-slate-800 mb-8 w-full border-b pb-4">Paso 1: Escala de Referencia (Cartas)</h2>
+        <div className="w-full bg-white p-8 rounded-3xl shadow-sm border border-slate-200 mb-12 flex flex-col items-center animate-fade-in overflow-hidden">
+          
+          <div className="flex justify-between items-center w-full mb-8 border-b pb-4">
+            <h2 className="text-2xl font-bold text-slate-800">
+              Paso 1: Escala de Referencia (Mesa)
+            </h2>
+            
+            {totalElements > 6 && (
+              <button
+                onClick={() => setIsZoomActive(!isZoomActive)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold transition-all shadow-sm border-2 ${
+                  isZoomActive 
+                    ? 'bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100' 
+                    : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                }`}
+              >
+                <span className="text-xl">{isZoomActive ? '🔍' : '🖼️'}</span>
+                {isZoomActive ? 'Ver de cerca' : 'Ajustar mesa a la pantalla'}
+              </button>
+            )}
+          </div>
+
           <CriterionInput criterionName={criterionName} setCriterionName={handleCriterionChange} error={errors.criterion} />
           
-          <div className="w-full max-w-lg flex flex-col items-center">
-            {levels.map((level, index) => (
-              <div key={index} className="w-full flex flex-col items-center">
-                <CardEditor index={index} level={level} handleLevelChange={handleLevelChange} handleRemoveLevel={handleRemoveLevel} totalLevels={levels.length} error={errors.levels[index]} canRemove={levels.length > 3} />
-                {index < levels.length - 1 && <BlankCardsCounter index={index} blankCardsCount={blankCards[index]} handleBlankCardChange={handleBlankCardChange} />}
-              </div>
-            ))}
-            <AddLevelButton handleAddLevel={handleAddLevel} />
+          <div className={`w-full mt-6 flex ${!isZoomActive ? 'overflow-x-auto pb-12 justify-start px-4' : 'overflow-hidden justify-center'}`}>
+            
+            <div 
+              className={`flex flex-row items-center min-w-max px-2 transition-transform duration-500 ease-out ${isZoomActive ? 'origin-top' : 'origin-top-left'}`}
+              style={{ 
+                transform: `scale(${currentScale})`,
+                marginBottom: isZoomActive && currentScale < 1 ? `-${(1 - currentScale) * 350}px` : '0px'
+              }}
+            >
+              {levels.map((level, index) => (
+                <React.Fragment key={index}>
+                  <CardEditor index={index} level={level} handleLevelChange={handleLevelChange} handleRemoveLevel={handleRemoveLevel} totalLevels={levels.length} error={errors.levels[index]} canRemove={levels.length > 3} />
+                  
+                  {index < levels.length - 1 && (
+                    <BlankCardsCounter index={index} blankCardsCount={blankCards[index]} handleBlankCardChange={handleBlankCardChange} />
+                  )}
+                </React.Fragment>
+              ))}
+              
+              <div className="w-6 h-1 bg-slate-200 mx-1 top-[40%]"></div>
+              <AddLevelButton handleAddLevel={handleAddLevel} />
+            </div>
+
           </div>
           
-          <div className="w-full max-w-lg mt-12 pt-8 border-t-2 border-slate-200 flex flex-col items-center">
+          <div className="w-full max-w-lg mt-12 pt-8 border-t-2 border-slate-200 flex flex-col items-center z-20 relative bg-white">
             <button onClick={handleGenerateBaseScale} disabled={isLoading} className={`w-full py-4 text-white text-xl font-bold rounded-xl shadow-lg transition-all active:scale-[0.98] ${isLoading ? 'bg-slate-400 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700'}`}>
               {isLoading ? 'Calculando...' : 'Generar Gráfica Continua'}
             </button>
@@ -126,7 +166,7 @@ export default function AdvancedMode() {
         </div>
       )}
 
-      {/* --- PASO 2 --- */}
+      {/* PASO 2 */}
       {step === 2 && (
         <div className="w-full max-w-6xl bg-white p-10 rounded-3xl shadow-sm border border-slate-200 animate-fade-in">
           <div className="flex justify-between items-center mb-8 border-b pb-4">
