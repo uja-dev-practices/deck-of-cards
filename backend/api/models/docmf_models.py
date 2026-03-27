@@ -32,7 +32,7 @@ class DoCMFRequest(BaseModel):
         core = info.data.get("core")
         if core:
             a, b = core
-            if not (c <= a < b <= d):
+            if not (c <= a <= b <= d):
                 raise ValueError("El núcleo debe estar dentro del soporte.")
         return v
 
