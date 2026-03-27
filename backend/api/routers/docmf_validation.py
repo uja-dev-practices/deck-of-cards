@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from models.docmf_validation_models import ValidationRequest
-from services.docmf_validation_service import validate_levels
+from api.models.docmf_validation_models import ValidationRequest
+from api.services.docmf_validation_service import validate_levels
 
 router = APIRouter()
 

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from models.evaluation_models import EvaluationRequest
-from services.docmf_evaluate_service import evaluate_docmf
+from api.models.evaluation_models import EvaluationRequest
+from api.services.docmf_evaluate_service import evaluate_docmf
 
 router = APIRouter()
 

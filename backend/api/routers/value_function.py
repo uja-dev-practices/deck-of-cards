@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from models.value_function_models import ValueFunctionRequest
-from services.value_function_service import compute_value_function, compute_points
+from api.models.value_function_models import ValueFunctionRequest
+from api.services.value_function_service import compute_value_function, compute_points
 
 router = APIRouter()
 

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from models.docmf_models import DoCMFMultiRequest
-from services.docmf_build_service import build_docmf_multi
+from api.models.docmf_models import DoCMFMultiRequest
+from api.services.docmf_build_service import build_docmf_multi
 
 router = APIRouter()
 
