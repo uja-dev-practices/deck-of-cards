@@ -11,7 +11,7 @@ export default function MainLayout() {
             <span className="text-white font-black text-xl leading-none">DoC</span>
           </div>
           <h1 className="text-xl font-bold text-slate-800">
-            Deck of Cards Method
+            Deck of Cards
           </h1>
         </div>
       </header>
