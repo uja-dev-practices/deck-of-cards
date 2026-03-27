@@ -1,34 +1,31 @@
-from fastapi import APIRouter, HTTPException, status
-from typing import List
+from fastapi import APIRouter, HTTPException, status, Depends
 from datetime import datetime
 from bson import ObjectId
 
 from api.database.mongodb import users_collection
 from api.models.user_models import FuzzyTerm, HistoryCreateRequest
+from api.utils.security import get_current_user
 
 router = APIRouter(prefix="/history", tags=["history"])
 
 
-@router.post("/{user_id}/add")
-async def add_history_item(user_id: str, data: HistoryCreateRequest):
-    user = await users_collection.find_one({"_id": ObjectId(user_id)})
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Usuario no encontrado",
-        )
+@router.post("/add")
+async def add_history_item(
+    data: HistoryCreateRequest,
+    current_user: dict = Depends(get_current_user),
+):
+    user_id = current_user["_id"]
 
     history_item_id = ObjectId()
-
     history_item = {
         "_id": history_item_id,
-        "name": data.name,  # ← nuevo campo
+        "name": data.name,
         "created_at": datetime.utcnow(),
         "results": [r.dict() for r in data.results],
     }
 
     await users_collection.update_one(
-        {"_id": ObjectId(user_id)},
+        {"_id": user_id},
         {"$push": {"history": history_item}},
     )
 
@@ -38,18 +35,15 @@ async def add_history_item(user_id: str, data: HistoryCreateRequest):
     }
 
 
-
-@router.delete("/{user_id}/delete/{history_item_id}")
-async def delete_history_item(user_id: str, history_item_id: str):
-    user = await users_collection.find_one({"_id": ObjectId(user_id)})
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Usuario no encontrado",
-        )
+@router.delete("/delete/{history_item_id}")
+async def delete_history_item(
+    history_item_id: str,
+    current_user: dict = Depends(get_current_user),
+):
+    user_id = current_user["_id"]
 
     result = await users_collection.update_one(
-        {"_id": ObjectId(user_id)},
+        {"_id": user_id},
         {"$pull": {"history": {"_id": ObjectId(history_item_id)}}},
     )
 
