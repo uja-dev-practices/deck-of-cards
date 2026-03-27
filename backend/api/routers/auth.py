@@ -3,6 +3,13 @@ from api.database.mongodb import users_collection
 from api.models.user_models import UserCreate, UserLogin
 from api.utils.security import hash_password, verify_password, generate_token
 from bson import ObjectId
+from fastapi import APIRouter, HTTPException, status, Depends
+from api.utils.security import (
+    hash_password,
+    verify_password,
+    generate_token,
+    get_current_user,
+)
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -87,3 +94,23 @@ async def logout_user(user_id: str):
     )
 
     return {"message": "Sesión cerrada correctamente"}
+
+
+@router.post("/logout")
+async def logout_user(current_user: dict = Depends(get_current_user)):
+    user_id = current_user["_id"]
+
+    await users_collection.update_one(
+        {"_id": user_id},
+        {"$set": {"token": None}},
+    )
+
+    return {"message": "Sesión cerrada correctamente"}
+
+@router.get("/me")
+async def get_me(current_user: dict = Depends(get_current_user)):
+    return {
+        "user_id": str(current_user["_id"]),
+        "username": current_user["username"],
+        "email": current_user["email"],
+    }
