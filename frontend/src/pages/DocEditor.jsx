@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Step1BaseScale from '../components/editor/Step1BaseScale';
 import Step2FuzzyModeling from '../components/editor/Step2FuzzyModeling';
-import SubscaleModal from '../components/editor/SubscaleModal'; // <-- IMPORTAMOS EL MODAL
+import SubscaleModal from '../components/editor/SubscaleModal';
 import { calculateValueFunction } from '../services/docService';
 
 export default function DocEditor() {
@@ -20,9 +20,8 @@ export default function DocEditor() {
   const [mfDefinitions, setMfDefinitions] = useState({});
 
   // ESTADOS: SUBESCALAS (FASE 2.5)
-  // Formato: { "regular": { left: { cardsCount: 3, blankCards: [1, 0] }, right: null }, "bueno": ... }
   const [subscales, setSubscales] = useState({});
-  const [modalTarget, setModalTarget] = useState(null); // { term: 'regular', side: 'left', initialData: {...} }
+  const [modalTarget, setModalTarget] = useState(null); 
 
   // MANEJADORES: FASE 1
   const handleCriterionChange = (val) => { setCriterionName(val); if (errors.criterion) setErrors({ ...errors, criterion: false }); };
@@ -117,9 +116,36 @@ export default function DocEditor() {
     setModalTarget(null);
   };
 
-  const handleFinalSubmit = () => {
-    console.log("PAYLOAD DOC-MF COMPLETO:", { baseScale, mfDefinitions, subscales });
-    alert("JSON en consola.");
+  const handleFinalSubmit = async () => {
+    const scaleKeys = Object.keys(baseScale);
+    
+    const payload = {
+      criterion_name: criterionName.trim(),
+      levels: scaleKeys.map(term => {
+        const mf = mfDefinitions[term];
+        const sub = subscales[term] || {};
+
+        return {
+          term: term,
+          core: [
+            Number(mf.coreStart.toFixed(4)), 
+            Number(mf.coreEnd.toFixed(4))
+          ],
+          support: [
+            Number(mf.supportStart.toFixed(4)), 
+            Number(mf.supportEnd.toFixed(4))
+          ],
+          left_blank_cards: sub.left ? sub.left.blankCards : [0],
+          right_blank_cards: sub.right ? sub.right.blankCards : [0],
+          
+          left_nodes_count: sub.left ? sub.left.cardsCount : 2,
+          right_nodes_count: sub.right ? sub.right.cardsCount : 2
+        };
+      })
+    };
+
+    console.log("PAYLOAD:", JSON.stringify(payload, null, 2));    
+    // TODO: Llamada a la API
   };
 
   return (
