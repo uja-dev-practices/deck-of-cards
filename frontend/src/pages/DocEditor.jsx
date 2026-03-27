@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Step1BaseScale from '../components/editor/Step1BaseScale';
 import Step2FuzzyModeling from '../components/editor/Step2FuzzyModeling';
 import SubscaleModal from '../components/editor/SubscaleModal';
 import { calculateValueFunction, buildFuzzyGraph } from '../services/docService';
+import Step3FinalGraph from '../components/editor/Step3FinalGraph';
 
 export default function DocEditor() {
   const [step, setStep] = useState(1); 
@@ -125,20 +126,26 @@ export default function DocEditor() {
         const mf = mfDefinitions[term];
         const sub = subscales[term] || {};
         
+        const c_start = Number(mf.coreStart.toFixed(4));
+        const c_end = Number(mf.coreEnd.toFixed(4));
+        
+        const s_start = Math.min(Number(mf.supportStart.toFixed(4)), c_start);
+        const s_end = Math.max(Number(mf.supportEnd.toFixed(4)), c_end);
+
         const leftCount = sub.left ? sub.left.cardsCount : 2;
         const left_nodes_x = Array.from({ length: leftCount }).map((_, i) => 
-          Number((mf.supportStart + (mf.coreStart - mf.supportStart) * (i / (leftCount - 1))).toFixed(4))
+          Number((s_start + (c_start - s_start) * (i / (leftCount - 1))).toFixed(4))
         );
 
         const rightCount = sub.right ? sub.right.cardsCount : 2;
         const right_nodes_x = Array.from({ length: rightCount }).map((_, i) => 
-          Number((mf.coreEnd + (mf.supportEnd - mf.coreEnd) * (i / (rightCount - 1))).toFixed(4))
+          Number((c_end + (s_end - c_end) * (i / (rightCount - 1))).toFixed(4))
         );
 
         return {
           term: term,
-          core: [ Number(mf.coreStart.toFixed(4)), Number(mf.coreEnd.toFixed(4)) ],
-          support: [ Number(mf.supportStart.toFixed(4)), Number(mf.supportEnd.toFixed(4)) ],
+          core: [ c_start, c_end ],
+          support: [ s_start, s_end ],
           left_nodes_x: left_nodes_x,
           left_blank_cards: sub.left ? sub.left.blankCards : [0],
           right_nodes_x: right_nodes_x,
@@ -187,13 +194,16 @@ export default function DocEditor() {
         />
       )}
 
-      {step === 3 && (
-        <div className="w-full bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col items-center">
-           <h2 className="text-2xl font-bold text-slate-800 mb-4">Paso 3: Espectro Difuso Final</h2>
-           <p className="text-slate-600 mb-6">Gráfica construida correctamente. ¡Mira la consola!</p>
-           <button onClick={() => setStep(2)} className="text-slate-500 hover:text-blue-600 underline">
-             ← Volver a editar
-           </button>
+      {step === 3 && finalResult && (
+        <div className="flex flex-col gap-6 w-full">
+          <Step3FinalGraph data={finalResult} />
+
+          <button 
+            onClick={() => console.log("Lógica para guardar")}
+            className="mt-4 px-8 py-3 bg-blue-600 text-white font-bold rounded-xl shadow-md hover:bg-blue-700 w-fit self-end transition-all"
+          >
+            Finalizar y Guardar
+          </button>
         </div>
       )}
 
