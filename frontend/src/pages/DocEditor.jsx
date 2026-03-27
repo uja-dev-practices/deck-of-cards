@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Step1BaseScale from '../components/editor/Step1BaseScale';
 import Step2FuzzyModeling from '../components/editor/Step2FuzzyModeling';
 import SubscaleModal from '../components/editor/SubscaleModal';
-import { calculateValueFunction } from '../services/docService';
+import { calculateValueFunction, buildFuzzyGraph } from '../services/docService';
 
 export default function DocEditor() {
   const [step, setStep] = useState(1); 
@@ -18,10 +18,11 @@ export default function DocEditor() {
   const [baseScale, setBaseScale] = useState({}); 
   const [selectedTerm, setSelectedTerm] = useState(null);
   const [mfDefinitions, setMfDefinitions] = useState({});
-
-  // ESTADOS: SUBESCALAS (FASE 2.5)
   const [subscales, setSubscales] = useState({});
   const [modalTarget, setModalTarget] = useState(null); 
+
+  // ESTADO: FASE 3
+  const [finalResult, setFinalResult] = useState(null);
 
   // MANEJADORES: FASE 1
   const handleCriterionChange = (val) => { setCriterionName(val); if (errors.criterion) setErrors({ ...errors, criterion: false }); };
@@ -100,7 +101,6 @@ export default function DocEditor() {
     });
   };
 
-  // MANEJADORES: SUBESCALAS
   const handleOpenSubscale = (term, side, initialData) => {
     setModalTarget({ term, side, initialData });
   };
@@ -116,40 +116,45 @@ export default function DocEditor() {
     setModalTarget(null);
   };
 
+  // Petición para el endpoint "build"
   const handleFinalSubmit = async () => {
     const scaleKeys = Object.keys(baseScale);
-    
     const payload = {
       criterion_name: criterionName.trim(),
       levels: scaleKeys.map(term => {
         const mf = mfDefinitions[term];
         const sub = subscales[term] || {};
-
         return {
           term: term,
-          core: [
-            Number(mf.coreStart.toFixed(4)), 
-            Number(mf.coreEnd.toFixed(4))
-          ],
-          support: [
-            Number(mf.supportStart.toFixed(4)), 
-            Number(mf.supportEnd.toFixed(4))
-          ],
+          core: [ Number(mf.coreStart.toFixed(4)), Number(mf.coreEnd.toFixed(4)) ],
+          support: [ Number(mf.supportStart.toFixed(4)), Number(mf.supportEnd.toFixed(4)) ],
           left_blank_cards: sub.left ? sub.left.blankCards : [0],
           right_blank_cards: sub.right ? sub.right.blankCards : [0],
-          
           left_nodes_count: sub.left ? sub.left.cardsCount : 2,
           right_nodes_count: sub.right ? sub.right.cardsCount : 2
         };
       })
     };
 
-    console.log("PAYLOAD:", JSON.stringify(payload, null, 2));    
-    // TODO: Llamada a la API
+    setIsLoading(true);
+    try {
+      const result = await buildFuzzyGraph(payload);
+      console.log("RESPUESTA DEL BACKEND:", result);
+      
+      setFinalResult(result);
+      setStep(3);
+
+    } catch (error) {
+      console.error(error);
+      alert("Error del servidor: \n" + JSON.stringify(error, null, 2));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="w-full flex flex-col items-center">
+      
       {step === 1 && (
         <Step1BaseScale
           criterionName={criterionName} handleCriterionChange={handleCriterionChange}
@@ -159,6 +164,7 @@ export default function DocEditor() {
           errors={errors} handleGenerateBaseScale={handleGenerateBaseScale} isLoading={isLoading}
         />
       )}
+
       {step === 2 && (
         <Step2FuzzyModeling
           baseScale={baseScale} mfDefinitions={mfDefinitions}
@@ -168,6 +174,16 @@ export default function DocEditor() {
           subscales={subscales}
           onOpenSubscale={handleOpenSubscale}
         />
+      )}
+
+      {step === 3 && (
+        <div className="w-full bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col items-center">
+           <h2 className="text-2xl font-bold text-slate-800 mb-4">Paso 3: Espectro Difuso Final</h2>
+           <p className="text-slate-600 mb-6">Gráfica construida correctamente. ¡Mira la consola!</p>
+           <button onClick={() => setStep(2)} className="text-slate-500 hover:text-blue-600 underline">
+             ← Volver a editar
+           </button>
+        </div>
       )}
 
       {modalTarget && (
