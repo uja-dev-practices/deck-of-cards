@@ -79,20 +79,20 @@ const Step3FinalGraph = ({ data }) => {
       {/* Leyenda */}
       <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 mt-6 pb-2">
         {sortedResults.map((item) => (
-          <div key={`legend-${item.term}`} className="flex items-center gap-2">
-            
-            <span 
-              className="w-3.5 h-3.5 rounded-full shadow-sm"
-              style={{ backgroundColor: item.color }} 
-            />
+            <div key={`legend-${item.term}`} className="flex items-center gap-2">
+                
+                <span 
+                    className="w-3.5 h-3.5 rounded-full shadow-sm"
+                    style={{ backgroundColor: item.color }} 
+                />
 
-            <span 
-              className="text-sm font-medium uppercase tracking-wide" 
-              style={{ color: item.color }}
-            >
-              {item.term}
-            </span>
-          </div>
+                <span 
+                    className="text-sm font-medium uppercase tracking-wide" 
+                    style={{ color: item.color }}
+                    >
+                    {item.term}
+                </span>
+            </div>
         ))}
       </div>
 
