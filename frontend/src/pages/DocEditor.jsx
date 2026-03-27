@@ -119,19 +119,30 @@ export default function DocEditor() {
   // Petición para el endpoint "build"
   const handleFinalSubmit = async () => {
     const scaleKeys = Object.keys(baseScale);
+    
     const payload = {
-      criterion_name: criterionName.trim(),
       levels: scaleKeys.map(term => {
         const mf = mfDefinitions[term];
         const sub = subscales[term] || {};
+        
+        const leftCount = sub.left ? sub.left.cardsCount : 2;
+        const left_nodes_x = Array.from({ length: leftCount }).map((_, i) => 
+          Number((mf.supportStart + (mf.coreStart - mf.supportStart) * (i / (leftCount - 1))).toFixed(4))
+        );
+
+        const rightCount = sub.right ? sub.right.cardsCount : 2;
+        const right_nodes_x = Array.from({ length: rightCount }).map((_, i) => 
+          Number((mf.coreEnd + (mf.supportEnd - mf.coreEnd) * (i / (rightCount - 1))).toFixed(4))
+        );
+
         return {
           term: term,
           core: [ Number(mf.coreStart.toFixed(4)), Number(mf.coreEnd.toFixed(4)) ],
           support: [ Number(mf.supportStart.toFixed(4)), Number(mf.supportEnd.toFixed(4)) ],
+          left_nodes_x: left_nodes_x,
           left_blank_cards: sub.left ? sub.left.blankCards : [0],
-          right_blank_cards: sub.right ? sub.right.blankCards : [0],
-          left_nodes_count: sub.left ? sub.left.cardsCount : 2,
-          right_nodes_count: sub.right ? sub.right.cardsCount : 2
+          right_nodes_x: right_nodes_x,
+          right_blank_cards: sub.right ? sub.right.blankCards : [0]
         };
       })
     };
