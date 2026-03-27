@@ -1,4 +1,4 @@
-from utils.interpolation import linear_interpolation
+from api.utils.interpolation import linear_interpolation
 
 def evaluate_docmf(request):
     x = request.x
