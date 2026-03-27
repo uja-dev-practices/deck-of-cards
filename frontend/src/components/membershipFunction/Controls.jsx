@@ -28,13 +28,13 @@ export default function Controls({ selectedTerm, currentMf, selectedColor, baseS
         <div className="space-y-4">
           <div>
             <label className="flex justify-between text-xs font-bold text-slate-600 mb-1">
-              <span>Inicio del Núcleo (Límite: {prevSupportEnd.toFixed(2)})</span><span style={{ color: selectedColor }}>{currentMf.coreStart.toFixed(3)}</span>
+              <span>Inicio del Núcleo</span><span style={{ color: selectedColor }}>{currentMf.coreStart.toFixed(3)}</span>
             </label>
             <input type="range" min={prevSupportEnd} max={nextCoreStart} step="0.001" value={currentMf.coreStart} onChange={(e) => updateCurrentMf('coreStart', e.target.value)} className="w-full cursor-pointer h-1.5" style={{ accentColor: selectedColor }} />
           </div>
           <div>
             <label className="flex justify-between text-xs font-bold text-slate-600 mb-1">
-              <span>Inicio del Soporte (Límite: {prevCoreEnd.toFixed(2)})</span><span style={{ color: selectedColor }}>{currentMf.supportStart.toFixed(3)}</span>
+              <span>Inicio del Soporte</span><span style={{ color: selectedColor }}>{currentMf.supportStart.toFixed(3)}</span>
             </label>
             <input type="range" min={prevCoreEnd} max={nextCoreStart} step="0.001" value={currentMf.supportStart} onChange={(e) => updateCurrentMf('supportStart', e.target.value)} className="w-full cursor-pointer h-1.5" style={{ accentColor: selectedColor, opacity: 0.7 }} />
           </div>
@@ -43,13 +43,13 @@ export default function Controls({ selectedTerm, currentMf, selectedColor, baseS
         <div className="space-y-4">
           <div>
             <label className="flex justify-between text-xs font-bold text-slate-600 mb-1">
-              <span>Fin del Núcleo (Límite: {nextSupportStart.toFixed(2)})</span><span style={{ color: selectedColor }}>{currentMf.coreEnd.toFixed(3)}</span>
+              <span>Fin del Núcleo</span><span style={{ color: selectedColor }}>{currentMf.coreEnd.toFixed(3)}</span>
             </label>
             <input type="range" min={prevCoreEnd} max={nextSupportStart} step="0.001" value={currentMf.coreEnd} onChange={(e) => updateCurrentMf('coreEnd', e.target.value)} className="w-full cursor-pointer h-1.5" style={{ accentColor: selectedColor }} />
           </div>
           <div>
             <label className="flex justify-between text-xs font-bold text-slate-600 mb-1">
-              <span>Fin del Soporte (Límite: {nextCoreStart.toFixed(2)})</span><span style={{ color: selectedColor }}>{currentMf.supportEnd.toFixed(3)}</span>
+              <span>Fin del Soporte</span><span style={{ color: selectedColor }}>{currentMf.supportEnd.toFixed(3)}</span>
             </label>
             <input type="range" min={prevCoreEnd} max={nextCoreStart} step="0.001" value={currentMf.supportEnd} onChange={(e) => updateCurrentMf('supportEnd', e.target.value)} className="w-full cursor-pointer h-1.5" style={{ accentColor: selectedColor, opacity: 0.7 }} />
           </div>

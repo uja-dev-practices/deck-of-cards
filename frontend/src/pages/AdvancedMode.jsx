@@ -13,16 +13,13 @@ export default function AdvancedMode() {
   const [step, setStep] = useState(1); 
   const [isLoading, setIsLoading] = useState(false);
 
-  // Estados Fase 1 (Escala)
   const [criterionName, setCriterionName] = useState('');
   const [levels, setLevels] = useState(['', '', '']); 
   const [blankCards, setBlankCards] = useState([0, 0]);
   const [errors, setErrors] = useState({ criterion: false, levels: [] });
   
-  // Estado para controlar la lupa (Zoom)
   const [isZoomActive, setIsZoomActive] = useState(true);
 
-  // Medición exacta con Refs
   const containerRef = useRef(null);
   const tableRef = useRef(null);
   const [dimensions, setDimensions] = useState({ container: 1000, table: 0 });
@@ -96,17 +93,35 @@ export default function AdvancedMode() {
         nextSupportStart = prev[scaleKeys[selectedIndex + 1]].supportStart;
       }
 
+      const anchor = baseScale[selectedTerm];
+
       if (field === 'supportStart' && numValue < prevCoreEnd) numValue = prevCoreEnd;
       if (field === 'coreStart' && numValue < prevSupportEnd) numValue = prevSupportEnd;
       if (field === 'coreEnd' && numValue > nextSupportStart) numValue = nextSupportStart;
       if (field === 'supportEnd' && numValue > nextCoreStart) numValue = nextCoreStart;
 
+      if ((field === 'supportStart' || field === 'coreStart') && numValue > anchor) numValue = anchor;
+      if ((field === 'supportEnd' || field === 'coreEnd') && numValue < anchor) numValue = anchor;
+
       const current = { ...prev[selectedTerm], [field]: numValue };
-      
-      if (field === 'supportStart' && current.supportStart > current.coreStart) current.coreStart = current.supportStart;
-      if (field === 'coreStart') { if (current.coreStart < current.supportStart) current.supportStart = current.coreStart; if (current.coreStart > current.coreEnd) current.coreEnd = current.coreStart; }
-      if (field === 'coreEnd') { if (current.coreEnd < current.coreStart) current.coreStart = current.coreEnd; if (current.coreEnd > current.supportEnd) current.supportEnd = current.coreEnd; }
-      if (field === 'supportEnd' && current.supportEnd < current.coreEnd) current.coreEnd = current.supportEnd;
+
+      if (field === 'supportStart') {
+        if (current.supportStart > current.coreStart) current.coreStart = current.supportStart;
+        if (current.coreStart > current.coreEnd) current.coreEnd = current.coreStart;
+        if (current.coreEnd > current.supportEnd) current.supportEnd = current.coreEnd;
+      } else if (field === 'coreStart') {
+        if (current.coreStart < current.supportStart) current.supportStart = current.coreStart;
+        if (current.coreStart > current.coreEnd) current.coreEnd = current.coreStart;
+        if (current.coreEnd > current.supportEnd) current.supportEnd = current.coreEnd;
+      } else if (field === 'coreEnd') {
+        if (current.coreEnd > current.supportEnd) current.supportEnd = current.coreEnd;
+        if (current.coreEnd < current.coreStart) current.coreStart = current.coreEnd;
+        if (current.coreStart < current.supportStart) current.supportStart = current.coreStart;
+      } else if (field === 'supportEnd') {
+        if (current.supportEnd < current.coreEnd) current.coreEnd = current.supportEnd;
+        if (current.coreEnd < current.coreStart) current.coreStart = current.coreEnd;
+        if (current.coreStart < current.supportStart) current.supportStart = current.coreStart;
+      }
 
       return { ...prev, [selectedTerm]: current };
     });
@@ -133,7 +148,7 @@ export default function AdvancedMode() {
           
           <div className="flex justify-between items-center w-full mb-4 border-b pb-3 relative z-30">
             <h2 className="text-xl font-bold text-slate-800">
-              Paso 1: Escala de Referencia (Mesa)
+              Paso 1: Establecer escala
             </h2>
             {needsZoom && (
               <button 
