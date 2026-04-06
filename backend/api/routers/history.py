@@ -3,7 +3,7 @@ from datetime import datetime
 from bson import ObjectId
 
 from api.database.mongodb import users_collection
-from api.models.user_models import FuzzyTerm, HistoryCreateRequest
+from api.models.user_models import FuzzyTerm, IT2FuzzyTerm, HistoryCreateRequest
 from api.utils.security import get_current_user
 
 router = APIRouter(prefix="/history", tags=["history"])
@@ -21,7 +21,7 @@ async def add_history_item(
         "_id": history_item_id,
         "name": data.name,
         "created_at": datetime.utcnow(),
-        "results": [r.dict() for r in data.results],
+        "results": [r.dict() for r in data.results],  # ahora soporta IT2MF
     }
 
     await users_collection.update_one(
@@ -33,6 +33,7 @@ async def add_history_item(
         "message": "Elemento añadido al historial",
         "history_item_id": str(history_item_id),
     }
+
 
 
 @router.delete("/delete/{history_item_id}")

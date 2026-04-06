@@ -13,6 +13,7 @@ from api.routers.docmf_validation import router as validation_router
 from api.routers.auth import router as auth_router
 from api.routers.history import router as history_router
 from api.routers.test_mongo import router as test_mongo_router
+from api.routers.docit2mf_build import router as docit2mf_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -39,3 +40,4 @@ app.include_router(validation_router, prefix="/api/criteria/doc-mf")
 app.include_router(test_mongo_router, prefix="/api")
 app.include_router(auth_router, prefix="/api")
 app.include_router(history_router, prefix="/api")
+app.include_router(docit2mf_router, prefix="/api")
