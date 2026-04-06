@@ -45,3 +45,4 @@ class DoCMFRequest(BaseModel):
 
 class DoCMFMultiRequest(BaseModel):
     levels: List[DoCMFRequest]
+
