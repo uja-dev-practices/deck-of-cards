@@ -1,18 +1,14 @@
-# routers/docit2mf_build.py
+# api/routers/docit2mf_build.py
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException
 from api.models.docit2mf_models import DoCIT2MFMultiRequest
 from api.services.docit2mf_build_service import build_it2mf_from_level
-from api.utils.security import get_current_user
 
 router = APIRouter(prefix="/criteria", tags=["criteria"])
 
 
 @router.post("/doc-it2mf/build")
-async def build_doc_it2mf(
-    request: DoCIT2MFMultiRequest,
-    current_user: dict = Depends(get_current_user)
-):
+async def build_doc_it2mf(request: DoCIT2MFMultiRequest):
     results = []
 
     try:
