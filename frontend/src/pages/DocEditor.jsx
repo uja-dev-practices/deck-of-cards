@@ -24,6 +24,7 @@ export default function DocEditor() {
 
   // ESTADO: FASE 3
   const [finalResult, setFinalResult] = useState(null);
+  const [submitError, setSubmitError] = useState(null);
 
   // MANEJADORES: FASE 1
   const handleCriterionChange = (val) => { setCriterionName(val); if (errors.criterion) setErrors({ ...errors, criterion: false }); };
@@ -119,6 +120,7 @@ export default function DocEditor() {
 
   // Petición para el endpoint "build"
   const handleFinalSubmit = async () => {
+    setSubmitError(null);
     const scaleKeys = Object.keys(baseScale);
     
     const payload = {
@@ -157,14 +159,35 @@ export default function DocEditor() {
     setIsLoading(true);
     try {
       const result = await buildFuzzyGraph(payload);
-      console.log("RESPUESTA DEL BACKEND:", result);
-      
       setFinalResult(result);
       setStep(3);
-
     } catch (error) {
-      console.error(error);
-      alert("Error del servidor: \n" + JSON.stringify(error, null, 2));
+      console.error("Error capturado:", error);
+      let friendlyMessage = "Ocurrió un error de validación.";
+      
+      if (Array.isArray(error)) {
+        friendlyMessage = error.map(err => {
+          let msg = err.msg.replace("Value error, ", ""); 
+          
+          // Traducción de mensajes del backend
+          msg = msg.replace("a < b", "el 'Inicio del Soporte' no puede ser mayor que el 'Inicio del Núcleo'");
+          msg = msg.replace("b <= c", "el 'Inicio del Núcleo' no puede ser mayor que el 'Fin del Núcleo'");
+          msg = msg.replace("c < d", "el 'Fin del Núcleo' no puede ser mayor que el 'Fin del Soporte'");
+          msg = msg.replace("El soporte debe cumplir", "Revisa los valores:");
+          msg = msg.replace("El núcleo debe cumplir", "Revisa los valores:");
+
+          if (err.loc && err.loc.includes("levels")) {
+            const levelIndex = err.loc[err.loc.indexOf("levels") + 1];
+            const termName = scaleKeys[levelIndex] || `Nivel ${Number(levelIndex) + 1}`;
+            return `• En la etiqueta "${termName}": ${msg}`;
+          }
+          return `• ${msg}`;
+        }).join("\n");
+      } else if (typeof error === 'string') {
+        friendlyMessage = error;
+      }
+      
+      setSubmitError(friendlyMessage);
     } finally {
       setIsLoading(false);
     }
@@ -191,12 +214,13 @@ export default function DocEditor() {
           onBack={() => setStep(1)}
           subscales={subscales}
           onOpenSubscale={handleOpenSubscale}
+          submitError={submitError}
         />
       )}
 
       {step === 3 && finalResult && (
         <div className="flex flex-col gap-6 w-full">
-          <Step3FinalGraph data={finalResult} />
+          <Step3FinalGraph data={finalResult} criterionName={criterionName} />
 
           <button 
             onClick={() => console.log("Lógica para guardar")}

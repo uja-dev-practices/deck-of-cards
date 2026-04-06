@@ -11,7 +11,8 @@ export default function Step2FuzzyModeling({
   handleFinalSubmit, 
   onBack, 
   subscales, 
-  onOpenSubscale
+  onOpenSubscale,
+  submitError
 }) {
   const scaleKeys = Object.keys(baseScale);
   
@@ -50,6 +51,20 @@ export default function Step2FuzzyModeling({
             selectedTerm={selectedTerm} 
             colors={CHART_COLORS} 
         />
+
+        {submitError && (
+          <div className="bg-red-50 mb-6 border-red-500 p-4 rounded-xl shadow-sm animate-fade-in mx-2">
+            <div className="flex items-center">
+              <span className="text-red-500 text-xl mr-3">⚠️</span>
+              <div>
+                <h3 className="text-sm font-bold text-red-800">Error de validación al generar la gráfica</h3>
+                <div className="mt-1 text-sm text-red-700 whitespace-pre-line font-medium">
+                  {submitError}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         <Controls 
             selectedTerm={selectedTerm} 

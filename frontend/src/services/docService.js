@@ -12,12 +12,10 @@ export const calculateValueFunction = async (payload) => {
 
 export const buildFuzzyGraph = async (payload) => {
   try {
-    const response = await api.post('/criteria/doc-mf/build', payload);
+    const response = await api.post('/criteria/doc-it2mf/build', payload);
     return response.data;
   } catch (error) {
     console.error('Error building fuzzy graph:', error);
     throw error.response?.data?.detail || error.message;
   }
-
-
 };
