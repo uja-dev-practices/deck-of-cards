@@ -59,30 +59,48 @@ export default function Step1BaseScale({
 
         <CriterionInput criterionName={criterionName} setCriterionName={handleCriterionChange} error={errors.criterion} />
         
-        <div ref={containerRef} className={`w-full mt-2 transition-all relative ${!isZoomActive && needsZoom ? 'overflow-x-auto flex justify-start pb-8 pt-4 px-4' : 'overflow-hidden flex justify-center pb-8 pt-4'}`}>
+        <div ref={containerRef} className={`w-full mt-2 transition-all relative ${!isZoomActive && needsZoom ? 'overflow-x-auto flex justify-start pb-12 pt-4 px-4 custom-scrollbar' : 'overflow-visible flex justify-center pb-12 pt-4'}`}>
             <div className={`flex flex-row items-start min-w-max transition-transform duration-500 ease-out px-4 origin-top`} style={{ transform: `scale(${currentScale})`, marginBottom: isZoomActive && currentScale < 1 ? `-${(1 - currentScale) * 300}px` : '0px' }}>
             
                 <div ref={tableRef} className="flex flex-row items-start relative px-10 overflow-visible">
                     {levels.map((level, index) => (
                     <React.Fragment key={index}>
-                        <div className="flex flex-col items-center mx-2 my-2 relative z-20">
+                        
+                        {/* CARTA DE NIVEL */}
+                        <div className="flex flex-col items-center mx-2 relative z-20">
                             <CardEditor index={index} level={level} handleLevelChange={handleLevelChange} handleRemoveLevel={handleRemoveLevel} totalLevels={levels.length} error={errors.levels[index]} canRemove={levels.length > 3} />
                         </div>
+
+                        {/* HUECO ENTRE CARTAS Y CONTADOR */}
                         {index < levels.length - 1 && (
-                        <BlankCardsCounter index={index} blankCardsCount={blankCards[index]} handleBlankCardChange={handleBlankCardChange} />
+                        <div className="flex flex-col items-center justify-start mx-1 relative min-w-[120px]">
+                            <div className="absolute w-[calc(100%+2rem)] h-1 bg-slate-200 top-[80px] -translate-y-1/2 z-0"></div>
+                            
+                            <div className="mt-[60px] flex flex-col items-center relative z-10 w-full">
+                                <BlankCardsCounter index={index} blankCardsCount={blankCards[index]} handleBlankCardChange={handleBlankCardChange} />
+                            </div>
+                        </div>
                         )}
                     </React.Fragment>
                     ))}
-                    <div className="mx-1 my-2 h-52 flex items-center justify-center">
-                        <div className="w-10 h-1 bg-slate-200 rounded"></div>
+                    
+                    {/* LÍNEA HACIA EL BOTÓN DE AÑADIR */}
+                    <div className="flex flex-col items-center justify-start relative min-w-[40px]">
+                        <div className="absolute w-full h-1 bg-slate-200 top-[80px] -translate-y-1/2 z-0 rounded"></div>
                     </div>
-                    <AddLevelButton handleAddLevel={handleAddLevel} />
+
+                    {/* BOTÓN AÑADIR NIVEL */}
+                    <div className="flex flex-col items-center mx-2 relative z-20">
+                        <AddLevelButton handleAddLevel={handleAddLevel} />
+                    </div>
+
                 </div>
 
             </div>
         </div>
         
-        <div className="w-full max-w-lg mt-2 pt-6 border-t border-slate-200 flex flex-col items-center z-20 relative bg-white">
+        {/* Generar Gráfica Continua */}
+        <div className="w-full max-w-lg mt-8 pt-6 border-t border-slate-200 flex flex-col items-center z-20 relative bg-white">
             <button onClick={handleGenerateBaseScale} disabled={isLoading} className={`w-full py-3 text-white text-lg font-bold rounded-xl shadow-md transition-all active:scale-[0.98] ${isLoading ? 'bg-slate-400 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700'}`}>
             {isLoading ? 'Calculando...' : 'Generar Gráfica Continua'}
             </button>

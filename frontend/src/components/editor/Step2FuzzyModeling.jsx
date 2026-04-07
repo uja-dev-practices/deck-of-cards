@@ -79,7 +79,7 @@ export default function Step2FuzzyModeling({
         
         <div className="w-full mt-8 flex justify-center">
             <button onClick={handleFinalSubmit} className="px-10 py-3 bg-slate-900 text-white text-lg font-bold rounded-xl shadow-md hover:bg-slate-800 transition-colors">
-                Guardar Todo el Espectro Difuso
+                Generar el Espectro Difuso
             </button>
         </div>
     </div>
