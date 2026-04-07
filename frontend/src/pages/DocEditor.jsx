@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Step1BaseScale from '../components/editor/Step1BaseScale';
 import Step2FuzzyModeling from '../components/editor/Step2FuzzyModeling';
 import SubscaleModal from '../components/editor/SubscaleModal';
-import { calculateValueFunction, buildFuzzyGraph } from '../services/docService';
+import { calculateValueFunction, buildFuzzyGraph, saveToHistory } from '../services/docService';
 import Step3FinalGraph from '../components/editor/Step3FinalGraph';
 
 export default function DocEditor() {
@@ -193,6 +193,38 @@ export default function DocEditor() {
     }
   };
 
+  // Petición para guardar en el historial
+  const handleSaveToHistory = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert("Para guardar tu modelo debes iniciar sesión primero. Puedes seguir visualizando la gráfica sin problema.");
+      return;
+    }
+
+    const defaultName = criterionName ? `Modelo de ${criterionName}` : "Mi nueva gráfica DoC-IT2MF";
+    const historyName = prompt("Dale un nombre a este modelo para guardarlo en tu historial:", defaultName);
+    
+    if (!historyName) return; 
+
+    setIsLoading(true);
+    try {
+      const payload = {
+        name: historyName,
+        results: finalResult.levels || finalResult.results 
+      };
+
+      await saveToHistory(payload);
+      
+      alert("¡Gráfica guardada con éxito en tu historial!");
+      
+    } catch (error) {
+      console.error("Error al guardar en el historial:", error);
+      alert("Hubo un problema al guardar el modelo: " + error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="w-full flex flex-col items-center">
       
@@ -223,10 +255,13 @@ export default function DocEditor() {
           <Step3FinalGraph data={finalResult} criterionName={criterionName} />
 
           <button 
-            onClick={() => console.log("Lógica para guardar")}
-            className="mt-4 px-8 py-3 bg-blue-600 text-white font-bold rounded-xl shadow-md hover:bg-blue-700 w-fit self-end transition-all"
+            onClick={handleSaveToHistory}
+            disabled={isLoading}
+            className={`mt-4 px-8 py-3 font-bold rounded-xl shadow-md w-fit self-end transition-all ${
+              isLoading ? 'bg-slate-400 text-slate-100 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'
+            }`}
           >
-            Finalizar y Guardar
+            {isLoading ? 'Guardando...' : 'Finalizar y Guardar'}
           </button>
         </div>
       )}
