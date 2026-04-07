@@ -102,11 +102,17 @@ export default function MainLayout({ children }) {
               </div>
             ) : (
               // BOTONES PARA USUARIO NO LOGUEADO
-              <div className="flex items-center gap-3">
-                <Link to="/login" className="text-sm font-bold text-slate-600 hover:text-blue-600 transition-colors">
-                  Iniciar sesión
+              <div className="flex items-center gap-2 ml-2 border-l border-slate-200 pl-4">
+                <Link 
+                  to="/login" 
+                  className="text-sm font-bold text-slate-600 px-4 py-2 rounded-lg hover:text-blue-600 hover:bg-slate-100 transition-all"
+                >
+                  Entrar
                 </Link>
-                <Link to="/register" className="text-sm font-bold bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+                <Link 
+                  to="/register" 
+                  className="text-sm font-bold bg-blue-600 text-white px-4 py-2 rounded-lg shadow-sm hover:bg-blue-700 hover:shadow transition-all"
+                >
                   Registrarse
                 </Link>
               </div>

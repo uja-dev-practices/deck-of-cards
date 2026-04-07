@@ -44,8 +44,7 @@ export default function History() {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto flex flex-col gap-8 animate-fade-in pb-12">
-      
+    <div className="w-full max-w-7xl mx-auto flex flex-col gap-8 animate-fade-in pb-12">      
       {/* Cabecera */}
       <div className="flex justify-between items-center bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
         <div>
@@ -83,7 +82,7 @@ export default function History() {
             return (
               <div key={itemId} className={`bg-white rounded-2xl shadow-sm border transition-all duration-300 ${isExpanded ? 'border-blue-300 ring-4 ring-blue-50' : 'border-slate-200 hover:border-slate-300'}`}>
                 
-                {/* Cabecera de la Card (Siempre visible) */}
+                {/* Cabecera de la Card */}
                 <div className="p-6 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-50/50 rounded-t-2xl">
                   <div className="flex items-center gap-4 w-full sm:w-auto">
                     <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xl shadow-inner">
@@ -92,7 +91,10 @@ export default function History() {
                     <div>
                       <h3 className="text-xl font-bold text-slate-800">{item.name || 'Modelo sin título'}</h3>
                       <p className="text-sm text-slate-500 font-medium">
-                        Guardado en el historial
+                        {item.created_at 
+                          ? `Guardado el ${new Date(item.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' })}` 
+                          : 'Guardado en el historial'
+                        }
                       </p>
                     </div>
                   </div>
@@ -109,12 +111,12 @@ export default function History() {
                       className="px-4 py-2.5 bg-white border border-red-200 text-red-500 font-bold rounded-xl hover:bg-red-50 transition-colors shadow-sm"
                       title="Borrar modelo"
                     >
-                      🗑️
+                      Borrar
                     </button>
                   </div>
                 </div>
 
-                {/* Contenido Desplegable (La Gráfica) */}
+                {/* Contenido Desplegable (La gráfica) */}
                 {isExpanded && (
                   <div className="p-6 border-t border-slate-100 animate-fade-in bg-white rounded-b-2xl">
                     <Step3FinalGraph data={item} criterionName={item.name} />
