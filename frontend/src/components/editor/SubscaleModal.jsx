@@ -102,49 +102,51 @@ export default function SubscaleModal({ onClose, onSave, targetInfo }) {
                   </div>
                 </div>
 
-                {/* HUECO ENTRE CARTAS: Representación y Controles */}
+                {/* HUECO ENTRE CARTAS */}
                 {index < cardsCount - 1 && (
-                  <div className="flex flex-col items-center justify-start mx-4 mt-2 max-w-[180px]">
-                    
-                    {/* Representación visual de las cartas blancas Sólidas / Fantasmas */}
-                    <div className="flex flex-wrap justify-center gap-1 min-h-[48px] mb-4">
-                      {Array.from({ length: blankCards[index].min }).map((_, i) => (
-                        <div key={`solid-${i}`} className="w-7 h-10 bg-white border-2 border-slate-300 rounded shadow-sm" />
-                      ))}
-                      {blankCards[index].isRange && Array.from({ length: blankCards[index].max - blankCards[index].min }).map((_, i) => (
-                        <div key={`ghost-${i}`} className="w-7 h-10 bg-blue-50 border-2 border-dashed border-blue-400 rounded opacity-60 flex items-center justify-center">
-                          <span className="text-blue-500 text-[10px] font-bold">?</span>
-                        </div>
-                      ))}
-                    </div>
+                  <div className="flex flex-col items-center justify-center mx-1 h-40 relative">
 
                     {/* Controles de números */}
                     {blankCards[index].isRange ? (
-                      // MODO RANGO
-                      <div className="flex gap-4 bg-blue-50/50 p-3 rounded-xl border border-blue-100 shadow-inner">
+                      // MODO RANGO 
+                      <div className="flex gap-1 items-center">
                         <div className="flex flex-col items-center">
-                          <span className="text-xs font-bold text-slate-500 mb-1">MÍN</span>
-                          <BlankCardsCounter index={index} blankCardsCount={blankCards[index].min} handleBlankCardChange={(idx, delta) => handleMinChange(idx, delta)} />
+                          <span className="text-[10px] font-bold text-slate-500 mb-1">MÍN</span>
+                          <BlankCardsCounter 
+                            index={index} 
+                            blankCardsCount={blankCards[index].min} 
+                            handleBlankCardChange={(idx, delta) => handleMinChange(idx, delta)} 
+                          />
                         </div>
+                        {/* Guión separador para unificar visualmente el rango */}
+                        <span className="text-slate-300 font-bold mt-3">-</span>
                         <div className="flex flex-col items-center">
-                          <span className="text-xs font-bold text-slate-500 mb-1">MÁX</span>
-                          <BlankCardsCounter index={index} blankCardsCount={blankCards[index].max} handleBlankCardChange={(idx, delta) => handleMaxChange(idx, delta)} />
+                          <span className="text-[10px] font-bold text-slate-500 mb-1">MÁX</span>
+                          <BlankCardsCounter 
+                            index={index} 
+                            blankCardsCount={blankCards[index].max} 
+                            handleBlankCardChange={(idx, delta) => handleMaxChange(idx, delta)} 
+                          />
                         </div>
                       </div>
                     ) : (
                       // MODO EXACTO
-                      <div className="flex flex-col items-center mt-2">
-                         <span className="text-xs font-bold text-slate-500 mb-1">CARTAS</span>
-                         <BlankCardsCounter index={index} blankCardsCount={blankCards[index].min} handleBlankCardChange={(idx, delta) => handleExactChange(idx, delta)} />
+                      <div className="flex flex-col items-center">
+                         <span className="text-[10px] font-bold text-slate-500 mb-1">CARTAS</span>
+                         <BlankCardsCounter 
+                            index={index} 
+                            blankCardsCount={blankCards[index].min} 
+                            handleBlankCardChange={(idx, delta) => handleExactChange(idx, delta)} 
+                          />
                       </div>
                     )}
 
                     {/* Botón Toggle */}
                     <button
                       onClick={() => toggleRangeMode(index)}
-                      className="mt-3 text-xs font-semibold text-blue-600 hover:text-blue-800 hover:underline transition-colors text-center"
+                      className="absolute -bottom-6 text-[10px] font-semibold text-blue-600 hover:text-blue-800 hover:underline transition-colors text-center w-max"
                     >
-                      {blankCards[index].isRange ? "Conozco la distancia exacta" : "¿Dudas? Define un rango"}
+                      {blankCards[index].isRange ? "Conozco la distancia" : "¿Dudas? Rango"}
                     </button>
 
                   </div>
