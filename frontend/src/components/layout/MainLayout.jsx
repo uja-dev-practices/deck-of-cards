@@ -29,8 +29,15 @@ export default function MainLayout({ children }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           
           {/* Logo / Título */}
-          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <span className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+          <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <img 
+              src="/favicon.svg" 
+              alt="Deck of Cards Logo" 
+              className="w-10 h-10 shadow-sm rounded-xl object-contain" 
+            />
+
+            {/* Texto del título */}
+            <span className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 hidden sm:block">
               Deck of Cards
             </span>
           </Link>
