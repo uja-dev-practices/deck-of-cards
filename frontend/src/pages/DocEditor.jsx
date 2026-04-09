@@ -261,7 +261,7 @@ export default function DocEditor() {
               isLoading ? 'bg-slate-400 text-slate-100 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'
             }`}
           >
-            {isLoading ? 'Guardando...' : 'Finalizar y Guardar'}
+            {isLoading ? 'Guardando...' : 'Guardar'}
           </button>
         </div>
       )}
