@@ -71,7 +71,7 @@ export default function History() {
         <div className="bg-white p-12 rounded-3xl shadow-sm border border-slate-200 flex flex-col items-center justify-center text-slate-400 border-dashed">
            <span className="text-6xl mb-4">📭</span>
            <p className="font-medium text-lg">Aún no has guardado ningún modelo.</p>
-           <p className="text-sm mt-2">Ve al editor, crea una gráfica y dale a "Finalizar y Guardar".</p>
+           <p className="text-sm mt-2">Ve al editor, crea una gráfica y dale a "Guardar".</p>
         </div>
       ) : (
         <div className="flex flex-col gap-6">
