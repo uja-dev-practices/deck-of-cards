@@ -15,7 +15,6 @@ def _extract_bounds(values: List[Union[int, List[int], tuple]], mode: str) -> Li
     result = []
     for item in values:
         if isinstance(item, int):
-            # valor fijo → mismo para LMF y UMF
             result.append(item)
         else:
             lo, hi = item
@@ -23,8 +22,45 @@ def _extract_bounds(values: List[Union[int, List[int], tuple]], mode: str) -> Li
     return result
 
 
+def _sort_nodes(nodes):
+    """Ordena los nodos por su coordenada X."""
+    return sorted(nodes, key=lambda p: p[0])
+
+
+def _enforce_upper_ge_lower(lower, upper):
+    """
+    Garantiza que la UMF (upper) nunca quede por debajo de la LMF (lower).
+    Ajusta los valores de pertenencia si es necesario.
+    """
+    # left nodes
+    for i in range(len(lower["left_nodes"])):
+        lx, ly = lower["left_nodes"][i]
+        ux, uy = upper["left_nodes"][i]
+        upper["left_nodes"][i][1] = max(uy, ly)
+
+    # right nodes
+    for i in range(len(lower["right_nodes"])):
+        lx, ly = lower["right_nodes"][i]
+        ux, uy = upper["right_nodes"][i]
+        upper["right_nodes"][i][1] = max(uy, ly)
+
+    return upper
+
+
 def build_it2mf_from_level(level: DoCIT2MFRequest):
+    """
+    Construye una función IT2MF a partir de un nivel con intervalos de cartas blancas.
+    Devuelve:
+    {
+        "term": ...,
+        "lower": {...},
+        "upper": {...}
+    }
+    """
+
+    # -------------------------
     # LMF (mínimos)
+    # -------------------------
     left_min = _extract_bounds(level.left_blank_cards, "min")
     right_min = _extract_bounds(level.right_blank_cards, "min")
 
@@ -39,7 +75,13 @@ def build_it2mf_from_level(level: DoCIT2MFRequest):
     )
     lower = build_doc_mf_level(lower_level)
 
+    # Ordenar nodos LMF
+    lower["left_nodes"] = _sort_nodes(lower["left_nodes"])
+    lower["right_nodes"] = _sort_nodes(lower["right_nodes"])
+
+    # -------------------------
     # UMF (máximos)
+    # -------------------------
     left_max = _extract_bounds(level.left_blank_cards, "max")
     right_max = _extract_bounds(level.right_blank_cards, "max")
 
@@ -53,6 +95,15 @@ def build_it2mf_from_level(level: DoCIT2MFRequest):
         right_blank_cards=right_max,
     )
     upper = build_doc_mf_level(upper_level)
+
+    # Ordenar nodos UMF
+    upper["left_nodes"] = _sort_nodes(upper["left_nodes"])
+    upper["right_nodes"] = _sort_nodes(upper["right_nodes"])
+
+    # -------------------------
+    # FIX: evitar inversión vertical (UMF < LMF)
+    # -------------------------
+    upper = _enforce_upper_ge_lower(lower, upper)
 
     return {
         "term": level.term,
