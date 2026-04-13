@@ -1,9 +1,7 @@
 # api/routers/google_auth.py
 
-from fastapi import APIRouter, HTTPException, Depends, Request
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import RedirectResponse
-from pydantic import BaseModel
-from bson import ObjectId
 import httpx
 import os
 import jwt
@@ -34,7 +32,6 @@ async def google_login():
     )
 
     return RedirectResponse(google_auth_url)
-
 
 
 # -----------------------------
@@ -95,4 +92,4 @@ async def google_callback(request: Request):
 
     token = create_access_token({"user_id": str(user_id)})
 
-    return {"message": "Login con Google exitoso", "token": token}
+    return RedirectResponse(f"http://localhost:5173/login?token={token}")
