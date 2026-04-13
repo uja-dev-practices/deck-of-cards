@@ -25,8 +25,6 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-app.include_router(google_auth_router)
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -45,3 +43,4 @@ app.include_router(test_mongo_router, prefix="/api")
 app.include_router(auth_router, prefix="/api")
 app.include_router(history_router, prefix="/api")
 app.include_router(docit2mf_router, prefix="/api")
+app.include_router(google_auth_router, prefix="/api")
