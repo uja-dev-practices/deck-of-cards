@@ -14,12 +14,14 @@ from api.routers.auth import router as auth_router
 from api.routers.history import router as history_router
 from api.routers.test_mongo import router as test_mongo_router
 from api.routers.docit2mf_build import router as docit2mf_router
+from api.routers.google_auth import router as google_auth_router 
+
+
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Aquí podrías hacer comprobaciones si quieres
     yield
-    # No hace falta cerrar nada con Motor
 
 app = FastAPI(lifespan=lifespan)
 
@@ -41,3 +43,4 @@ app.include_router(test_mongo_router, prefix="/api")
 app.include_router(auth_router, prefix="/api")
 app.include_router(history_router, prefix="/api")
 app.include_router(docit2mf_router, prefix="/api")
+app.include_router(google_auth_router, prefix="/api")

@@ -4,6 +4,10 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from api.database.mongodb import users_collection
 from bson import ObjectId
+import os
+import jwt
+
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -17,7 +21,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 
 def generate_token() -> str:
-    return secrets.token_hex(32)  # 64 caracteres seguros
+    return secrets.token_hex(32)
 
 
 security_scheme = HTTPBearer()
@@ -35,6 +39,8 @@ async def get_current_user(
             detail="Token inválido o usuario no autenticado",
         )
 
-    # devolvemos el documento tal cual (dict)
     user["id"] = str(user["_id"])
     return user
+
+def create_access_token(data: dict):
+    return jwt.encode(data, SECRET_KEY, algorithm="HS256")
