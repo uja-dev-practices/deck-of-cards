@@ -1,4 +1,6 @@
-# Deck of Cards – Proyecto TFG  
+# Deck of Cards <img align="right" width="60" height="40" alt="image" src="https://github.com/user-attachments/assets/e654df77-be36-4d38-8b5a-a3d3eac462e3" />
+
+
 
 <div align="center">
 
@@ -91,14 +93,14 @@ Antes de empezar, necesitas:
 
 # 📦 2. Instalación y ejecución del proyecto
 
-Clona el repositorio:
+Con una terminal clona el repositorio o descarga el contenido y guárdalo en una carpeta local:
 
 ```bash
-git clone https://github.com/tu-repo/deck-of-cards.git
+git clone https://github.com/AlexisLopez-Dev/deck-of-cards.git
 cd deck-of-cards
 ```
 
-Levanta los contenedores:
+Situado en la carpeta adecuada levanta los contenedores del proyecto:
 
 ```bash
 docker compose up --build
@@ -138,70 +140,7 @@ A continuación se resumen los endpoints más importantes del backend, organizad
 
 ---
 
-# 🔐 4. Configuración del archivo .env
-
-El backend necesita un archivo `.env` para funcionar correctamente, especialmente para el login con Google.
-
-📍 **Este archivo debe estar dentro de la carpeta `backend/`**, así:
-
-```
-deck-of-cards/
-│
-├── backend/
-│   ├── .env   ← AQUÍ
-│   ├── main.py
-│   ├── routers/
-│   └── ...
-```
-
-Contenido mínimo del `.env`:
-
-```
-GOOGLE_CLIENT_ID=tu_client_id_de_google
-GOOGLE_CLIENT_SECRET=tu_client_secret_de_google
-```
-
-> [!WARNING]
-> No compartas esas claves.
-
----
-
-# 🔑 5. Cómo crear GOOGLE_CLIENT_ID y GOOGLE_CLIENT_SECRET
-
-Para activar el login con Google, debes crear credenciales OAuth 2.0.
-
-### 🟦 Paso 1 — Entra en Google Cloud Console  
-https://console.cloud.google.com
-
-### 🟩 Paso 2 — Crea un proyecto  
-Menú superior → “Seleccionar proyecto” → “Nuevo proyecto”.
-
-### 🟧 Paso 3 — Configura la pantalla de consentimiento OAuth  
-En el buscador escribe: **OAuth consent screen**  
-Selecciona **External** → Rellena los datos → Guardar.
-
-### 🟨 Paso 4 — Crea las credenciales OAuth  
-Menú lateral:  
-**APIs & Services → Credentials → Create Credentials → OAuth Client ID**
-
-Tipo de aplicación:  
-✔ **Web application**
-
-Añade este Redirect URI obligatorio:
-http://localhost:8000/api/auth/google/callback
-
-
-### 🟥 Paso 5 — Copia tus claves  
-Google te mostrará:
-
-- **Client ID**
-- **Client Secret**
-
-Pégalos en tu `.env` dentro de `backend/`.
-
----
-
-# 📚 6. Estructura del proyecto
+# 📚 4. Estructura del proyecto
 ```
 deck-of-cards/
 │
@@ -222,6 +161,96 @@ deck-of-cards/
 
 ---
 
+# 🔐 5. Configuración del archivo .env
+
+El backend necesita un archivo `.env` para funcionar correctamente, especialmente para el login con Google.
+
+📍 **Este archivo debe estar dentro de la carpeta `backend/`**, así:
+
+```
+deck-of-cards/
+│
+├── backend/
+│   ├── .env   ← AQUÍ
+│   ├── main.py
+│   ├── routers/
+│   └── ...
+```
+
+Contenido mínimo del `.env`:
+
+```
+GOOGLE_CLIENT_ID=tu_client_id_de_google      //id del cliente, debe ser el mismo del proyecto de google cloud.
+GOOGLE_CLIENT_SECRET=tu_client_secret_de_google    //secreto del cliente, debe de copiarse del proyecto de google cloud cuando se crea.
+GOOGLE_REDIRECT_URI=http://localhost:8000/api/auth/google/callback    //url de redirección, debe ser la misma que en el proyecto de google cloud.
+SECRET_KEY=superclaveultrasecreta123      //para codificación de los tokens (puedes poner cualquier texto o dejar el ejemplo que te doy).
+```
+
+> [!WARNING]
+> No compartas la clave secreta del cliente.
+
+Un ejemplo de página de donde sacar las tres primeras claves:
+
+<img width="1902" height="835" alt="image" src="https://github.com/user-attachments/assets/6b92adf4-a36e-4e8d-acb7-ee41912125d5" />
+
+---
+
+# 🔑 6. Cómo crear el proyecto con su GOOGLE_CLIENT_ID y GOOGLE_CLIENT_SECRET
+
+Para activar el login con Google, debes crear credenciales OAuth 2.0.
+Para ello sigue estos pasos:
+
+### 🟦 Paso 1 — Entra en Google Cloud Console  
+https://console.cloud.google.com
+
+### 🟩 Paso 2 — Crea un proyecto  
+Menú superior → “Seleccionar proyecto” → “Nuevo proyecto”.
+
+### 🟧 Paso 3 — Configura la pantalla de consentimiento OAuth
+
+<img width="750" height="731" alt="image" src="https://github.com/user-attachments/assets/fb06952a-ddde-4a15-87f8-162b53882d00" />
+
+
+En el buscador escribe: **OAuth consent screen**  ó ve a la página que se muestra en la captura superior.
+
+Selecciona **Información de la página**: 
+
+→ Rellena los datos necesarios (no hace falta poner un dominio si lo tienes en local) → Guardar
+
+
+<img width="1398" height="470" alt="image" src="https://github.com/user-attachments/assets/d38ff3b4-5ee7-4608-ad62-515e38114392" />
+
+
+### 🟨 Paso 4 — Crea las credenciales OAuth  
+Menú lateral:  
+**APIs & Services → Credentials → Create Credentials → OAuth Client ID**
+
+<img width="1003" height="815" alt="image" src="https://github.com/user-attachments/assets/8a9e61fd-f4dc-4b33-aac3-3e793ceac8b3" />
+
+
+
+Tipo de aplicación:  
+✔ **Web application**
+
+Añade en `Orígenes autorizados de javascript`:
+http://localhost:8000
+
+Añade este Redirect URI obligatorio:
+http://localhost:8000/api/auth/google/callback
+
+<img width="1911" height="847" alt="image" src="https://github.com/user-attachments/assets/c63454ac-00a5-43e3-9f53-25b4862292df" />
+
+
+### 🟥 Paso 5 — Copia tus claves  
+Google te mostrará:
+
+- **Client ID**
+- **Client Secret**
+
+Pégalos en tu `.env` dentro de `backend/`. Asegúrate de que las copias correctamente.
+
+---
+
 # 🎉 7. Listo para usar
 
 Con esto, ya puedes:
@@ -236,4 +265,4 @@ Y ...
 
 ¡Proyecto listo para ejecutarse en local!
 
-Gracias por llegar hasta aquí :)
+Gracias por llegar hasta aquí ;)
