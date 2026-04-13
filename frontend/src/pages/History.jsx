@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getUserHistory, deleteHistoryItem } from '../services/docService';
 import Step3FinalGraph from '../components/editor/Step3FinalGraph';
@@ -116,12 +116,21 @@ export default function History() {
                   </div>
                 </div>
 
-                {/* Contenido Desplegable (La gráfica) */}
-                {isExpanded && (
-                  <div className="p-6 border-t border-slate-100 animate-fade-in bg-white rounded-b-2xl">
-                    <Step3FinalGraph data={item} criterionName={item.name} />
+                {/* Contenido Desplegable (La gráfica)*/}
+                <div 
+                  className={`transition-all duration-500 ease-in-out overflow-hidden ${
+                    isExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
+                  }`}
+                >
+                  <div className="p-6 border-t border-slate-100 bg-white rounded-b-2xl">
+                    {isExpanded ? (
+                      <Step3FinalGraph data={item} criterionName={item.name} />
+                    ) : (
+                      <div className="h-[550px] w-full" />
+                    )}
                   </div>
-                )}
+                </div>
+                
               </div>
             );
           })}
