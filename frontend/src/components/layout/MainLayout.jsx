@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext'; 
+import Footer from './Footer';
 
 export default function MainLayout({ children }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -23,9 +24,10 @@ export default function MainLayout({ children }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans">
+    // IMPORTANTE: flex y flex-col son la clave para que el footer se quede abajo
+    <div className="min-h-screen flex flex-col bg-slate-50 font-sans">      
       {/* HEADER */}
-      <header className="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50">
+      <header className="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50 shrink-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           
           {/* Logo / Título */}
@@ -35,8 +37,6 @@ export default function MainLayout({ children }) {
               alt="Deck of Cards Logo" 
               className="w-10 h-10 shadow-sm rounded-xl object-contain" 
             />
-
-            {/* Texto del título */}
             <span className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 hidden sm:block">
               Deck of Cards
             </span>
@@ -129,9 +129,12 @@ export default function MainLayout({ children }) {
       </header>
 
       {/* CONTENIDO PRINCIPAL */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-1 flex flex-col max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {children}
       </main>
+      
+      {/* FOOTER */}
+      <Footer />
     </div>
   );
 }
