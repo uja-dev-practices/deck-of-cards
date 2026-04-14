@@ -7,9 +7,11 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  
   const navigate = useNavigate();
   const { login } = useAuth();
   const [searchParams] = useSearchParams();
+  
   const googleLoginProcessed = useRef(false);
 
   useEffect(() => {
@@ -22,23 +24,28 @@ export default function Login() {
       url.searchParams.delete('token');
       window.history.replaceState({}, '', url);
 
-      const fetchUserAndLogin = async () => {
-        try {
-          localStorage.setItem('token', token);
-          
-          const realUserData = await authService.getCurrentUser();
-          
-          login({ user: realUserData, token });
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        
+        const decodedToken = JSON.parse(jsonPayload);
 
-          navigate('/', { replace: true });
-        } catch (err) {
-          console.error("Error al sincronizar perfil de Google:", err);
-          setError("Error de sincronización con Google. Inténtalo de nuevo.");
-          localStorage.removeItem('token'); 
-        }
-      };
+        const googleUser = {
+          _id: decodedToken.sub || decodedToken.user_id || "google_id",
+          username: decodedToken.email ? decodedToken.email.split('@')[0] : "Usuario Google",
+          email: decodedToken.email || ""
+        };
 
-      fetchUserAndLogin();
+        login({ user: googleUser, access_token: token });
+        navigate('/', { replace: true });
+
+      } catch (err) {
+        console.error("Error al decodificar el token de Google:", err);
+        setError("Error al procesar el login con Google. El token está corrupto.");
+      }
     }
   }, [searchParams, login, navigate]);
 
@@ -46,8 +53,8 @@ export default function Login() {
     e.preventDefault();
     setError('');
     try {
-      const userData = await authService.login(email, password);
-      login(userData);
+      const data = await authService.login(email, password);
+      login(data);
       navigate('/');
     } catch (err) {
       setError('Credenciales incorrectas.');
@@ -68,19 +75,31 @@ export default function Login() {
         </div>
 
         {error && (
-          <div className="bg-red-50 text-red-600 p-4 rounded-2xl text-sm font-bold mb-6 border border-red-100 text-center">{error}</div>
+          <div className="bg-red-50 text-red-600 p-4 rounded-2xl text-sm font-bold mb-6 border border-red-100 text-center">
+            {error}
+          </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1">
             <label className="text-sm font-bold text-slate-700 ml-1">Email</label>
-            <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-slate-50 focus:bg-white" placeholder="correo@ejemplo.com" />
+            <input 
+              type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-slate-50 focus:bg-white" 
+              placeholder="correo@ejemplo.com" 
+            />
           </div>
           <div className="space-y-1">
             <label className="text-sm font-bold text-slate-700 ml-1">Contraseña</label>
-            <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-slate-50 focus:bg-white" placeholder="••••••••" />
+            <input 
+              type="password" required value={password} onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-slate-50 focus:bg-white" 
+              placeholder="••••••••" 
+            />
           </div>
-          <button type="submit" className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-sm active:scale-95 mt-2">Entrar</button>
+          <button type="submit" className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-sm active:scale-95 mt-2">
+            Entrar
+          </button>
         </form>
 
         <div className="relative my-8">

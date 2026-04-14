@@ -1,19 +1,18 @@
-# api/routers/google_auth.py
-
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import RedirectResponse
+from datetime import datetime, timedelta
 import httpx
 import os
 import jwt
 
 from api.database.mongodb import users_collection
-from api.utils.security import create_access_token
 
 router = APIRouter(prefix="/auth/google", tags=["auth"])
 
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 
 # -----------------------------
@@ -90,6 +89,20 @@ async def google_callback(request: Request):
     else:
         user_id = user["_id"]
 
-    token = create_access_token({"user_id": str(user_id)})
+    token = jwt.encode(
+        {
+            "sub": str(user_id),
+            "email": email,
+            "name": name,
+            "exp": datetime.utcnow() + timedelta(hours=24)
+        },
+        SECRET_KEY,
+        algorithm="HS256"
+    )
+
+    await users_collection.update_one(
+        {"_id": user_id},
+        {"$set": {"token": token}}
+    )
 
     return RedirectResponse(f"http://localhost:5173/login?token={token}")
