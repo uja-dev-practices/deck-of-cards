@@ -32,7 +32,7 @@ export default function Header() {
         </Link>
 
         <div className="flex items-center gap-4 whitespace-nowrap">
-          <div className="flex items-center gap-1 mr-4">
+          <div className="flex items-center gap-1 mr-2">
             <Link to="/editor" className={`text-sm font-bold px-4 py-2 rounded-lg transition-all ${isActive('/editor') ? 'text-blue-600' : 'text-slate-600 hover:text-blue-500'}`}>
               Editor
             </Link>
@@ -44,10 +44,10 @@ export default function Header() {
           </div>
 
           {isAuthenticated ? (
-            <div className="relative">
+            <div className="relative border-l border-slate-200 pl-4">
               <button 
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="w-10 h-10 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center border-2 border-blue-200 hover:bg-blue-200"
+                className="w-10 h-10 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center border-2 border-blue-200 hover:bg-blue-200 transition-colors"
               >
                 {userInitial}
               </button>
@@ -60,7 +60,7 @@ export default function Header() {
                       <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Usuario</p>
                       <p className="text-sm font-bold text-slate-700 truncate">{user?.username}</p>
                     </div>
-                    <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50">
+                    <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
                       🚪 Cerrar Sesión
                     </button>
                   </div>
@@ -68,9 +68,13 @@ export default function Header() {
               )}
             </div>
           ) : (
-            <div className="flex items-center gap-2 ml-2 border-l border-slate-200 pl-4">
-              <Link to="/login" className="text-sm font-bold text-slate-600 px-4 py-2 hover:text-blue-600">Entrar</Link>
-              <Link to="/register" className="text-sm font-bold bg-blue-600 text-white px-4 py-2 rounded-lg shadow-sm">Registrarse</Link>
+            <div className="flex items-center border-l border-slate-200 pl-4">
+              <Link 
+                to="/login" 
+                className="text-sm font-bold bg-blue-600 text-white px-5 py-2.5 rounded-xl shadow-sm hover:bg-blue-700 transition-all active:scale-95"
+              >
+                Acceder
+              </Link>
             </div>
           )}
         </div>
