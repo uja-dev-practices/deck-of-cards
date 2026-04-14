@@ -248,7 +248,7 @@ export default function DocEditor() {
       )}
 
       {step === 3 && finalResult && (
-        <div className="flex flex-col gap-6 w-full">
+        <div className="flex flex-col w-full">
           <Step3FinalGraph data={finalResult} criterionName={criterionName} />
 
           <button 
