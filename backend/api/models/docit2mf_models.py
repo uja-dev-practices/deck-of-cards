@@ -35,7 +35,7 @@ class DoCIT2MFRequest(BaseModel):
     def support_valid(cls, v, info):
         c, d = v
         if c >= d:
-            raise ValueError("El soporte debe cumplir c < d.")
+            raise ValueError("El soporte debe cumplir c <= d.")
 
         core = info.data.get("core")
         if core:
