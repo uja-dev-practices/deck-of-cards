@@ -162,29 +162,51 @@ export default function DocEditor() {
       setFinalResult(result);
       setStep(3);
     } catch (error) {
-      console.error("Error capturado:", error);
-      let friendlyMessage = "Ocurrió un error de validación.";
+      console.error("Error capturado detallado:", error);
+      let friendlyMessage = "Ocurrió un error de validación al generar la gráfica.";
       
-      if (Array.isArray(error)) {
-        friendlyMessage = error.map(err => {
-          let msg = err.msg.replace("Value error, ", ""); 
-          
-          // Traducción de mensajes del backend
-          msg = msg.replace("a < b", "el 'Inicio del Soporte' no puede ser mayor que el 'Inicio del Núcleo'");
-          msg = msg.replace("b <= c", "el 'Inicio del Núcleo' no puede ser mayor que el 'Fin del Núcleo'");
-          msg = msg.replace("c < d", "el 'Fin del Núcleo' no puede ser mayor que el 'Fin del Soporte'");
-          msg = msg.replace("El soporte debe cumplir", "Revisa los valores:");
-          msg = msg.replace("El núcleo debe cumplir", "Revisa los valores:");
+      // 1. BUSCADOR DE ERRORES: Extraemos el detalle venga como venga (Axios, Pydantic, o genérico)
+      let details = error;
+      if (error.response && error.response.data && error.response.data.detail) {
+        details = error.response.data.detail; // Array de Pydantic
+      } else if (error.detail) {
+        details = error.detail;
+      }
 
-          if (err.loc && err.loc.includes("levels")) {
-            const levelIndex = err.loc[err.loc.indexOf("levels") + 1];
-            const termName = scaleKeys[levelIndex] || `Nivel ${Number(levelIndex) + 1}`;
-            return `• En la etiqueta "${termName}": ${msg}`;
+      // 2. Si logramos extraer el Array de Pydantic
+      if (Array.isArray(details)) {
+        friendlyMessage = details.map(err => {
+          // Limpiamos el texto que ensucia Pydantic ("Value error, ")
+          const cleanMsg = err.msg ? err.msg.replace("Value error, ", "") : "Valor incorrecto";
+
+          // Buscamos en qué etiqueta falló usando err.loc
+          if (err.loc) {
+            const levelIndexPos = err.loc.indexOf("levels");
+            if (levelIndexPos !== -1 && err.loc.length > levelIndexPos + 1) {
+              const levelIndex = err.loc[levelIndexPos + 1];
+              const termName = scaleKeys[levelIndex] || `Nivel ${Number(levelIndex) + 1}`;
+              return `• En la etiqueta "${termName}": ${cleanMsg}`;
+            }
+            // Formato alternativo de Pydantic v2
+            if (typeof err.loc[1] === 'number') {
+               const termName = scaleKeys[err.loc[1]] || `Nivel ${err.loc[1] + 1}`;
+               return `• En la etiqueta "${termName}": ${cleanMsg}`;
+            }
           }
-          return `• ${msg}`;
+          return `• ${cleanMsg}`;
         }).join("\n");
-      } else if (typeof error === 'string') {
-        friendlyMessage = error;
+      } 
+      // 3. Si el backend nos mandó un simple string
+      else if (typeof details === 'string') {
+        friendlyMessage = details;
+      } 
+      // 4. Si es un error genérico (Axios de bajo nivel)
+      else if (error.message) {
+        if (error.message.includes("422")) {
+           friendlyMessage = "Revisa los datos: asegúrate de que el 'Núcleo' esté dentro del 'Soporte' y que c <= d.";
+        } else {
+           friendlyMessage = error.message;
+        }
       }
       
       setSubmitError(friendlyMessage);
