@@ -162,53 +162,28 @@ export default function DocEditor() {
       setFinalResult(result);
       setStep(3);
     } catch (error) {
-      console.error("Error capturado detallado:", error);
-      let friendlyMessage = "Ocurrió un error de validación al generar la gráfica.";
       
-      // 1. BUSCADOR DE ERRORES: Extraemos el detalle venga como venga (Axios, Pydantic, o genérico)
-      let details = error;
-      if (error.response && error.response.data && error.response.data.detail) {
-        details = error.response.data.detail; // Array de Pydantic
-      } else if (error.detail) {
-        details = error.detail;
-      }
+      let friendlyMessage = "Ocurrió un error al procesar la solicitud.";
+      const errorData = error.backendData || error.response?.data || error;
 
-      // 2. Si logramos extraer el Array de Pydantic
-      if (Array.isArray(details)) {
-        friendlyMessage = details.map(err => {
-          // Limpiamos el texto que ensucia Pydantic ("Value error, ")
-          const cleanMsg = err.msg ? err.msg.replace("Value error, ", "") : "Valor incorrecto";
-
-          // Buscamos en qué etiqueta falló usando err.loc
-          if (err.loc) {
-            const levelIndexPos = err.loc.indexOf("levels");
-            if (levelIndexPos !== -1 && err.loc.length > levelIndexPos + 1) {
-              const levelIndex = err.loc[levelIndexPos + 1];
-              const termName = scaleKeys[levelIndex] || `Nivel ${Number(levelIndex) + 1}`;
-              return `• En la etiqueta "${termName}": ${cleanMsg}`;
-            }
-            // Formato alternativo de Pydantic v2
-            if (typeof err.loc[1] === 'number') {
-               const termName = scaleKeys[err.loc[1]] || `Nivel ${err.loc[1] + 1}`;
-               return `• En la etiqueta "${termName}": ${cleanMsg}`;
-            }
+      if (errorData.detail) {
+          if (errorData.detail === "Invalid input data") {
+               friendlyMessage = "Revisa los valores del Soporte y Núcleo. Asegúrate de que el 'Inicio del Soporte' sea menor o igual al 'Fin del Soporte', y que el 'Núcleo' esté dentro del 'Soporte'.";
+          } else if (typeof errorData.detail === 'string') {
+              friendlyMessage = errorData.detail;
           }
-          return `• ${cleanMsg}`;
-        }).join("\n");
-      } 
-      // 3. Si el backend nos mandó un simple string
-      else if (typeof details === 'string') {
-        friendlyMessage = details;
-      } 
-      // 4. Si es un error genérico (Axios de bajo nivel)
-      else if (error.message) {
-        if (error.message.includes("422")) {
-           friendlyMessage = "Revisa los datos: asegúrate de que el 'Núcleo' esté dentro del 'Soporte' y que c <= d.";
-        } else {
-           friendlyMessage = error.message;
-        }
+      } else if (errorData.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
+           friendlyMessage = errorData.errors.map(err => {
+              let cleanMsg = err.msg ? err.msg.replace("Value error, ", "") : "Valor incorrecto";
+              if (err.loc && err.loc.includes("levels")) {
+                const levelIndex = err.loc[err.loc.indexOf("levels") + 1];
+                const termName = scaleKeys[levelIndex] || `Nivel ${Number(levelIndex) + 1}`;
+                return `• En la etiqueta "${termName}": ${cleanMsg}`;
+              }
+              return `• ${cleanMsg}`;
+            }).join("\n");
       }
-      
+
       setSubmitError(friendlyMessage);
     } finally {
       setIsLoading(false);
