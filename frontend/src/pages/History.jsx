@@ -44,7 +44,7 @@ export default function History() {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto flex flex-col gap-8 animate-fade-in pb-12">      
+    <div className="w-full max-w-7xl mx-auto flex flex-col gap-8 animate-fade-in pb-2">      
       {/* Cabecera */}
       <div className="flex justify-between items-center bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
         <div>

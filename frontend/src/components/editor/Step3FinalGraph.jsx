@@ -19,7 +19,7 @@ const Step3FinalGraph = memo(({ data, criterionName }) => {
   }
 
   return (
-    <div className="w-full h-[550px] mt-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col final-graph-container relative">
+    <div className="w-full h-[550px] bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col final-graph-container relative">
       <style>{`.final-graph-container svg * { clip-path: none !important; }`}</style>
       
       <h3 className="text-xl font-bold mb-4 text-center text-slate-800 uppercase">

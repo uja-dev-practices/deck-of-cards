@@ -37,7 +37,7 @@ export default function Step1BaseScale({
   const currentScale = isZoomActive && needsZoom ? dynamicScale : 1;
 
   return (
-    <div className="w-full bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-6 flex flex-col items-center animate-fade-in relative overflow-visible">
+    <div className="w-full bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col items-center animate-fade-in relative overflow-visible">
         
         <div className="flex justify-between items-center w-full mb-4 border-b pb-3 relative z-30">
             <h2 className="text-xl font-bold text-slate-800">

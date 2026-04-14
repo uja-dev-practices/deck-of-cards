@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext'; 
+import { FiLogIn, FiLogOut } from 'react-icons/fi';
 
 export default function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -60,8 +61,13 @@ export default function Header() {
                       <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Usuario</p>
                       <p className="text-sm font-bold text-slate-700 truncate">{user?.username}</p>
                     </div>
-                    <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
-                      🚪 Cerrar Sesión
+                    
+                    <button 
+                      onClick={handleLogout} 
+                      className="w-full flex items-center gap-2 px-4 py-2 text-sm font-bold text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      <FiLogOut className="w-5 h-5" strokeWidth={2.5} />
+                      Cerrar Sesión
                     </button>
                   </div>
                 </>
@@ -69,10 +75,12 @@ export default function Header() {
             </div>
           ) : (
             <div className="flex items-center border-l border-slate-200 pl-4">
+              
               <Link 
                 to="/login" 
-                className="text-sm font-bold bg-blue-600 text-white px-5 py-2.5 rounded-xl shadow-sm hover:bg-blue-700 transition-all active:scale-95"
+                className="flex items-center gap-2 text-sm font-bold bg-blue-600 text-white px-5 py-2.5 rounded-xl shadow-sm hover:bg-blue-700 transition-all active:scale-95"
               >
+                <FiLogIn className="w-5 h-5" strokeWidth={2.5} />
                 Acceder
               </Link>
             </div>
