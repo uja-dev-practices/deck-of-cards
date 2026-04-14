@@ -2,10 +2,12 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
+import EyeIcon from '../components/EyeIcon';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   
   const navigate = useNavigate();
@@ -72,8 +74,8 @@ export default function Login() {
       <div className="max-w-md w-full bg-white p-10 rounded-3xl shadow-sm border border-slate-200">
         
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-black text-slate-800 tracking-tight">Iniciar sesión</h2>
-          <p className="text-slate-500 mt-2">Únete para guardar tu progreso</p>
+          <h2 className="text-3xl font-black text-slate-800 tracking-tight">Deck of Cards</h2>
+          <p className="text-slate-500 mt-2">Accede a tu historial y gráficas guardadas</p>
         </div>
 
         {error && (
@@ -91,14 +93,26 @@ export default function Login() {
               placeholder="correo@ejemplo.com" 
             />
           </div>
+          
           <div className="space-y-1">
             <label className="text-sm font-bold text-slate-700 ml-1">Contraseña</label>
-            <input 
-              type="password" required value={password} onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-slate-50 focus:bg-white" 
-              placeholder="••••••••" 
-            />
+            <div className="relative">
+              <input 
+                type={showPassword ? "text" : "password"}
+                required value={password} onChange={(e) => setPassword(e.target.value)}
+                className="w-full pl-5 pr-12 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-slate-50 focus:bg-white" 
+                placeholder="••••••••" 
+              />
+              <button 
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors focus:outline-none"
+              >
+                <EyeIcon isOpen={showPassword} />
+              </button>
+            </div>
           </div>
+
           <button type="submit" className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-sm active:scale-95 mt-2">
             Entrar
           </button>
