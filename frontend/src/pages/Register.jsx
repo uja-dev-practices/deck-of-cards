@@ -7,6 +7,7 @@ export default function Register() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const { login } = useAuth();
@@ -14,6 +15,11 @@ export default function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+
+        if (password !== confirmPassword) {
+            setError('Las contraseñas no coinciden. Por favor, revísalas.');
+            return;
+        }
 
         try {
             const data = await authService.register(username, email, password);
@@ -32,69 +38,68 @@ export default function Register() {
     };
 
   return (
-    <div className="flex justify-center mt-4 sm:mt-8">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+    <div className="flex-1 flex items-center justify-center">
+      <div className="max-w-md w-full bg-white p-10 rounded-3xl shadow-sm border border-slate-200">
+        
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-slate-800">Crear Cuenta</h2>
+          <h2 className="text-3xl font-black text-slate-800 tracking-tight">Crear Cuenta</h2>
           <p className="text-slate-500 mt-2">Únete para guardar tu progreso</p>
         </div>
 
         {error && (
-          <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-6 text-sm font-medium border border-red-200">
+          <div className="bg-red-50 text-red-600 p-4 rounded-2xl text-sm font-bold mb-6 border border-red-100 text-center">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-1">Nombre de usuario</label>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-1">
+            <label className="text-sm font-bold text-slate-700 ml-1">Nombre de usuario</label>
             <input 
-              type="text" 
-              required
-              autoComplete="username"
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Ej: alexis99"
+              type="text" required autoComplete="username"
+              className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-slate-50 focus:bg-white"
+              value={username} onChange={(e) => setUsername(e.target.value)}
+              placeholder="Ej: usuario"
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-1">Email</label>
+          <div className="space-y-1">
+            <label className="text-sm font-bold text-slate-700 ml-1">Email</label>
             <input 
-              type="email" 
-              required
-              autoComplete="email"
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="email" required autoComplete="email"
+              className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-slate-50 focus:bg-white"
+              value={email} onChange={(e) => setEmail(e.target.value)}
               placeholder="tu@email.com"
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-1">Contraseña</label>
+          <div className="space-y-1">
+            <label className="text-sm font-bold text-slate-700 ml-1">Contraseña</label>
             <input 
-              type="password" 
-              required
-              autoComplete="new-password"
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              type="password" required autoComplete="new-password"
+              className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-slate-50 focus:bg-white"
+              value={password} onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
             />
           </div>
 
-          <button 
-            type="submit" 
-            className="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-md mt-4"
-          >
+          <div className="space-y-1">
+            <label className="text-sm font-bold text-slate-700 ml-1">Confirmar contraseña</label>
+            <input 
+              type="password" required autoComplete="new-password"
+              className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-slate-50 focus:bg-white"
+              value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="••••••••"
+            />
+          </div>
+
+          <button type="submit" className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-sm active:scale-95 mt-2">
             Registrarse
           </button>
         </form>
 
-        <p className="text-center mt-6 text-sm text-slate-600">
-          ¿Ya tienes cuenta? <Link to="/login" className="text-blue-600 font-bold hover:underline">Inicia sesión aquí</Link>
+        <p className="mt-8 text-center text-sm text-slate-500 font-medium">
+          ¿Ya tienes cuenta? <Link to="/login" className="text-blue-600 hover:underline font-extrabold">Inicia sesión aquí</Link>
         </p>
       </div>
     </div>

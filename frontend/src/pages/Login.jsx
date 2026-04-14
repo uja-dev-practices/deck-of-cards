@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
@@ -44,7 +44,9 @@ export default function Login() {
 
       } catch (err) {
         console.error("Error al decodificar el token de Google:", err);
-        setError("Error al procesar el login con Google. El token está corrupto.");
+        setTimeout(() => {
+          setError("Error al procesar el login con Google. El token está corrupto.");
+        }, 0);
       }
     }
   }, [searchParams, login, navigate]);
@@ -66,12 +68,12 @@ export default function Login() {
   };
 
   return (
-    <div className="flex-1 flex items-center justify-center py-4">
+    <div className="flex-1 flex items-center justify-center">
       <div className="max-w-md w-full bg-white p-10 rounded-3xl shadow-sm border border-slate-200">
         
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-black text-slate-800 tracking-tight">Deck of Cards</h2>
-          <p className="text-slate-500 mt-2">Accede a tu panel de control</p>
+          <h2 className="text-3xl font-black text-slate-800 tracking-tight">Iniciar sesión</h2>
+          <p className="text-slate-500 mt-2">Únete para guardar tu progreso</p>
         </div>
 
         {error && (
