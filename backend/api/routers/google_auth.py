@@ -14,10 +14,6 @@ GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-
-# -----------------------------
-# 1. LOGIN → REDIRECCIÓN A GOOGLE
-# -----------------------------
 @router.get("/login")
 async def google_login():
     google_auth_url = (
@@ -32,10 +28,6 @@ async def google_login():
 
     return RedirectResponse(google_auth_url)
 
-
-# -----------------------------
-# 2. CALLBACK → GOOGLE DEVUELVE EL CODE
-# -----------------------------
 @router.get("/callback")
 async def google_callback(request: Request):
 

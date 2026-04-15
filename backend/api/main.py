@@ -16,9 +16,6 @@ from api.routers.test_mongo import router as test_mongo_router
 from api.routers.docit2mf_build import router as docit2mf_router
 from api.routers.google_auth import router as google_auth_router 
 
-
-
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     yield

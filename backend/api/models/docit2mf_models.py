@@ -1,11 +1,7 @@
-# models/docit2mf_models.py
-
 from pydantic import BaseModel, Field, field_validator, ValidationInfo
 from typing import List, Tuple, Union
 
-
 BlankCardInput = Union[int, Tuple[int, int], List[int]]
-
 
 class DoCIT2MFRequest(BaseModel):
     term: str

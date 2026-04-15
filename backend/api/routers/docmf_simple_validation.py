@@ -9,7 +9,6 @@ def validate_simple_docmf(request: SimpleValidationRequest):
     results = validate_simple_levels(request.levels)
     invalid = [r for r in results if not r["valid"]]
 
-    # Caso: un solo nivel
     if len(request.levels) == 1:
         if invalid:
             raise HTTPException(
@@ -24,7 +23,6 @@ def validate_simple_docmf(request: SimpleValidationRequest):
             "details": results[0]
         }
 
-    # Caso: varios niveles
     if invalid:
         return {
             "message": "Validación completada.",

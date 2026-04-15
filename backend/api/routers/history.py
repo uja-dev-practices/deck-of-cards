@@ -10,10 +10,6 @@ from api.utils.security import get_current_user
 
 router = APIRouter(prefix="/history", tags=["history"])
 
-
-# -----------------------------
-# 1. Añadir un elemento al historial
-# -----------------------------
 @router.post("/add")
 async def add_history_item(
     data: HistoryCreateRequest,
@@ -39,10 +35,6 @@ async def add_history_item(
         "history_item_id": str(history_item_id),
     }
 
-
-# -----------------------------
-# 2. Eliminar un elemento del historial
-# -----------------------------
 @router.delete("/delete/{history_item_id}")
 async def delete_history_item(
     history_item_id: str,
@@ -64,9 +56,6 @@ async def delete_history_item(
     return {"message": "Elemento eliminado del historial"}
 
 
-# -----------------------------
-# 3. Obtener todos los historiales de todos los usuarios (ordenados)
-# -----------------------------
 @router.get("/all")
 async def get_all_histories():
     users = await users_collection.find().to_list(None)
@@ -90,7 +79,6 @@ async def get_all_histories():
                 }
             })
 
-    # Ordenar por fecha
     all_histories_sorted = sorted(
         all_histories,
         key=lambda h: h["history_item"]["created_at"]
@@ -98,10 +86,6 @@ async def get_all_histories():
 
     return {"count": len(all_histories_sorted), "histories": all_histories_sorted}
 
-
-# -----------------------------
-# 4. Obtener historiales del usuario autenticado (ordenados)
-# -----------------------------
 @router.get("/user")
 async def get_user_histories(current_user: dict = Depends(get_current_user)):
     user_id = current_user["_id"]
@@ -116,7 +100,6 @@ async def get_user_histories(current_user: dict = Depends(get_current_user)):
 
     history = user.get("history", [])
 
-    # Ordenar por fecha
     history_sorted = sorted(history, key=lambda h: h["created_at"])
 
     formatted_history = []

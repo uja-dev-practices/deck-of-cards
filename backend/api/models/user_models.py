@@ -1,13 +1,8 @@
-# api/models/user_models.py
-
 from typing import List, Optional, Union
 from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
 
-
-# -----------------------------
 # MODELOS DE FUNCIONES DIFUSAS
-# -----------------------------
 
 class FuzzyTerm(BaseModel):
     term: str
@@ -23,9 +18,7 @@ class IT2FuzzyTerm(BaseModel):
     upper: FuzzyTerm
 
 
-# -----------------------------
 # HISTORIAL
-# -----------------------------
 
 class HistoryItem(BaseModel):
     id: Optional[str] = Field(default=None, alias="_id")
@@ -39,9 +32,7 @@ class HistoryCreateRequest(BaseModel):
     results: List[Union[FuzzyTerm, IT2FuzzyTerm]]
 
 
-# -----------------------------
 # USUARIOS
-# -----------------------------
 
 class UserCreate(BaseModel):
     username: str

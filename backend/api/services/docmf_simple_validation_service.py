@@ -4,7 +4,6 @@ def validate_simple_level(level: dict):
     a, b = level["core"]
     c, d = level["support"]
 
-    # Validación: núcleo dentro del soporte
     if not (c <= a < b <= d):
         errors.append("El núcleo debe estar completamente dentro del soporte.")
 

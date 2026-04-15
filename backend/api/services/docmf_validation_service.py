@@ -4,11 +4,9 @@ def validate_single_level(level: dict):
     a, b = level["core"]
     c, d = level["support"]
 
-    # Core dentro del soporte
     if not (c <= a < b <= d):
         errors.append("El núcleo debe estar completamente dentro del soporte.")
 
-    # Nodos cubren correctamente el soporte
     left = level["left_nodes"]
     right = level["right_nodes"]
 

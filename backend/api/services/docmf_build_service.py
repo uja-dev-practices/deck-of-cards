@@ -1,5 +1,3 @@
-# services/docmf_build_service.py
-
 from api.models.docmf_models import DoCMFRequest
 from api.models.user_models import FuzzyTerm
 
@@ -8,7 +6,6 @@ def build_single_docmf(request: DoCMFRequest):
     a, b = request.core
     c, d = request.support
 
-    # LEFT
     TL = sum(e + 1 for e in request.left_blank_cards)
     YL = 1 / TL
     left_nodes = []
@@ -21,7 +18,6 @@ def build_single_docmf(request: DoCMFRequest):
             acc += request.left_blank_cards[i - 1] + 1
             left_nodes.append((x, round(acc * YL, 4)))
 
-    # RIGHT
     TR = sum(e + 1 for e in request.right_blank_cards)
     YR = 1 / TR
     right_nodes = []
