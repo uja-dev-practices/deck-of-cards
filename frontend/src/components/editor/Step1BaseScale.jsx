@@ -42,7 +42,7 @@ export default function Step1BaseScale({
         
         <div className="flex justify-between items-center w-full mb-4 border-b pb-3 relative z-30">
             <h2 className="text-xl font-bold text-slate-800">
-                Paso 1: Escala de Referencia (Mesa)
+                Paso 1: Escala de Referencia
             </h2>
             {needsZoom && (
             <button 
