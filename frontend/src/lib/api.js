@@ -22,12 +22,18 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
+    // Si es un error 401 (No autorizado)
     if (error.response && error.response.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href = '/login';
+      
+      // SOLUCIÓN: Solo recargamos y redirigimos si NO estamos ya en /login
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
     }
-
+    
+    // Propagamos el error para que los componentes puedan leer backendData
     if (error.response && error.response.data) {
         return Promise.reject({ 
             ...error, 

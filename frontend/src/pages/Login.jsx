@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
-import EyeIcon from '../components/EyeIcon';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -70,7 +70,7 @@ export default function Login() {
   };
 
   return (
-    <div className="flex-1 flex items-center justify-center">
+    <div className="flex-1 flex items-center justify-center py-4">
       <div className="max-w-md w-full bg-white p-10 rounded-3xl shadow-sm border border-slate-200">
         
         <div className="text-center mb-8">
@@ -108,7 +108,11 @@ export default function Login() {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors focus:outline-none"
               >
-                <EyeIcon isOpen={showPassword} />
+                {showPassword ? (
+                  <FiEye className="w-5 h-5" strokeWidth={2} />
+                ) : (
+                  <FiEyeOff className="w-5 h-5" strokeWidth={2} />
+                )}
               </button>
             </div>
           </div>
