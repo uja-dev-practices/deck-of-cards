@@ -1,0 +1,13 @@
+# Caché de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Variables de entorno
+.env
+.env*
+
+
+# Configuraciones del editor
+.vscode/
+.idea/
