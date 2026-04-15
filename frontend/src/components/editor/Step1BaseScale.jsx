@@ -3,6 +3,7 @@ import CriterionInput from '../CriterionInput';
 import CardEditor from '../CardEditor';
 import BlankCardsCounter from '../BlankCardsCounter';
 import AddLevelButton from '../AddLevelButton';
+import { FiZoomIn, FiMaximize } from 'react-icons/fi';
 
 export default function Step1BaseScale({
   criterionName, handleCriterionChange,
@@ -51,15 +52,15 @@ export default function Step1BaseScale({
                 }} 
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm border text-sm ${isZoomActive ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-white border-slate-200 text-slate-600'}`}
             >
-                <span>{isZoomActive ? '🔍' : '🖼️'}</span>
-                {isZoomActive ? 'Ver de cerca (Scroll)' : 'Ajustar mesa'}
+                <span>{isZoomActive ? <FiZoomIn className="w-4 h-4" strokeWidth={2.5} /> : <FiMaximize className="w-4 h-4" strokeWidth={2.5}></FiMaximize> }</span>
+                {isZoomActive ? 'Ver de cerca' : 'Ajustar mesa'}
             </button>
             )}
         </div>
 
         <CriterionInput criterionName={criterionName} setCriterionName={handleCriterionChange} error={errors.criterion} />
         
-        <div ref={containerRef} className={`w-full mt-2 transition-all relative ${!isZoomActive && needsZoom ? 'overflow-x-auto flex justify-start pb-12 pt-4 px-4 custom-scrollbar' : 'overflow-visible flex justify-center pb-12 pt-4'}`}>
+        <div ref={containerRef} className={`w-full mt-2 transition-all relative ${!isZoomActive && needsZoom ? 'overflow-x-auto flex justify-start pt-4 px-4 custom-scrollbar' : 'overflow-visible flex justify-center pt-4'}`}>
             <div className={`flex flex-row items-start min-w-max transition-transform duration-500 ease-out px-4 origin-top`} style={{ transform: `scale(${currentScale})`, marginBottom: isZoomActive && currentScale < 1 ? `-${(1 - currentScale) * 300}px` : '0px' }}>
             
                 <div ref={tableRef} className="flex flex-row items-start relative px-10 overflow-visible">
@@ -100,7 +101,7 @@ export default function Step1BaseScale({
         </div>
         
         {/* Generar Gráfica Continua */}
-        <div className="w-full max-w-lg mt-8 pt-6 border-t border-slate-200 flex flex-col items-center z-20 relative bg-white">
+        <div className="w-full max-w-lg mt-6 mb-2 pt-6 border-t border-slate-200 flex flex-col items-center z-20 relative bg-white">
             <button onClick={handleGenerateBaseScale} disabled={isLoading} className={`w-full py-3 text-white text-lg font-bold rounded-xl shadow-md transition-all active:scale-[0.98] ${isLoading ? 'bg-slate-400 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700'}`}>
             {isLoading ? 'Calculando...' : 'Generar Gráfica Continua'}
             </button>

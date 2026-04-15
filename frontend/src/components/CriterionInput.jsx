@@ -1,6 +1,6 @@
 export default function CriterionInput({ criterionName, setCriterionName, error }) {
   return (
-    <div className="flex flex-row items-center justify-center gap-3 w-full z-30 relative mb-2">
+    <div className="flex flex-row items-center justify-center gap-3 w-full z-30 relative mt-4">
       <label className="text-sm font-bold text-slate-600 uppercase tracking-wide whitespace-nowrap">
         Nombre del Criterio:
       </label>
@@ -19,8 +19,8 @@ export default function CriterionInput({ criterionName, setCriterionName, error 
         />
         
         {error && (
-          <span className="absolute top-1/2 -right-24 -translate-y-1/2 text-xs font-bold text-red-500 animate-pulse whitespace-nowrap">
-            * Obligatorio
+          <span className="absolute top-1/2 -right-18 -translate-y-1/2 text-red-500 text-xs font-semibold">
+            Obligatorio
           </span>
         )}
       </div>

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
-import EyeIcon from '../components/EyeIcon';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 
 export default function Register() {
     const [username, setUsername] = useState('');
@@ -37,7 +37,7 @@ export default function Register() {
     };
 
   return (
-    <div className="flex-1 flex items-center justify-center">
+    <div className="flex-1 flex items-center justify-center py-4">
       <div className="max-w-md w-full bg-white p-10 rounded-3xl shadow-sm border border-slate-200">
         
         <div className="text-center mb-8">
@@ -58,7 +58,7 @@ export default function Register() {
               type="text" required autoComplete="username"
               className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-slate-50 focus:bg-white"
               value={username} onChange={(e) => setUsername(e.target.value)}
-              placeholder="Ej: usuario99"
+              placeholder="Ej: alexis99"
             />
           </div>
 
@@ -86,7 +86,11 @@ export default function Register() {
                 type="button" onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors focus:outline-none"
               >
-                <EyeIcon isOpen={showPassword} />
+                {showPassword ? (
+                  <FiEye className="w-5 h-5" strokeWidth={2} />
+                ) : (
+                  <FiEyeOff className="w-5 h-5" strokeWidth={2} />
+                )}
               </button>
             </div>
           </div>
@@ -105,7 +109,11 @@ export default function Register() {
                 type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors focus:outline-none"
               >
-                <EyeIcon isOpen={showConfirmPassword} />
+                {showConfirmPassword ? (
+                  <FiEye className="w-5 h-5" strokeWidth={2} />
+                ) : (
+                  <FiEyeOff className="w-5 h-5" strokeWidth={2} />
+                )}
               </button>
             </div>
           </div>

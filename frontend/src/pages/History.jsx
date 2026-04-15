@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getUserHistory, deleteHistoryItem } from '../services/docService';
 import Step3FinalGraph from '../components/editor/Step3FinalGraph';
+import { FiEye, FiTrash2, FiBarChart2, FiInbox, FiClock } from 'react-icons/fi';
 
 export default function History() {
   const [historyItems, setHistoryItems] = useState([]);
@@ -64,12 +65,13 @@ export default function History() {
       {/* Lista de Historial */}
       {isLoading ? (
         <div className="bg-white p-12 rounded-3xl shadow-sm border border-slate-200 flex flex-col items-center justify-center text-slate-400 border-dashed">
-           <div className="animate-spin text-4xl mb-4">⏳</div>
-           <p className="font-medium">Cargando tus gráficas...</p>
+           <div className="text-6xl"><FiClock className="w-16 h-16 mb-4 opacity-50" strokeWidth={1.5} /></div>
+           <p className="font-medium text-lg">Cargando tus gráficas...</p>
+
         </div>
       ) : historyItems.length === 0 ? (
         <div className="bg-white p-12 rounded-3xl shadow-sm border border-slate-200 flex flex-col items-center justify-center text-slate-400 border-dashed">
-           <span className="text-6xl mb-4">📭</span>
+           <span className="text-6xl"><FiInbox className="w-16 h-16 mb-4 opacity-50" strokeWidth={1.5} /></span>
            <p className="font-medium text-lg">Aún no has guardado ningún modelo.</p>
            <p className="text-sm mt-2">Ve al editor, crea una gráfica y dale a "Guardar".</p>
         </div>
@@ -86,7 +88,7 @@ export default function History() {
                 <div className="p-6 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-50/50 rounded-t-2xl">
                   <div className="flex items-center gap-4 w-full sm:w-auto">
                     <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xl shadow-inner">
-                      📊
+                      <FiBarChart2 className="w-5 h-5" strokeWidth={2.5} />
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-slate-800">{item.name || 'Modelo sin título'}</h3>
@@ -111,7 +113,7 @@ export default function History() {
                       className="px-4 py-2.5 bg-white border border-red-200 text-red-500 font-bold rounded-xl hover:bg-red-50 transition-colors shadow-sm"
                       title="Borrar modelo"
                     >
-                      Borrar
+                      <FiTrash2 className="w-5 h-5" strokeWidth={2.5} />
                     </button>
                   </div>
                 </div>

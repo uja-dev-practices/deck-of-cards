@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="bg-white border-t border-slate-200 mt-auto shrink-0 w-full pt-12 pb-6">
+    <footer className="bg-white border-t border-slate-200 mt-auto shrink-0 w-full pt-8 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-6">
