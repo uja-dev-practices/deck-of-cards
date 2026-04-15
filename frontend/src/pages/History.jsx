@@ -35,8 +35,9 @@ export default function History() {
       await deleteHistoryItem(id);
       setHistoryItems(prev => prev.filter(item => item._id !== id && item.id !== id));
       if (expandedId === id) setExpandedId(null);
-    } catch (error) {
-      alert("Error al borrar: " + error);
+    } catch (err) {
+      const errorMessage = err.response?.data?.detail || err.message || "Error desconocido";
+      alert("Error al borrar: " + errorMessage);
     }
   };
 

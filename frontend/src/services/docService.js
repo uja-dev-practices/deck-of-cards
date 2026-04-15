@@ -40,9 +40,9 @@ export const getUserHistory = async () => {
   }
 };
 
-export const deleteHistoryItem = async (id) => {
+export const deleteHistoryItem = async (historyId) => {
   try {
-    const response = await api.delete(`/history/${id}`);
+    const response = await api.delete(`/history/delete/${historyId}`);
     return response.data;
   } catch (error) {
     if (error.response && error.response.data) throw error.response.data;
