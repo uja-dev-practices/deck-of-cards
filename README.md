@@ -148,11 +148,12 @@ deck-of-cards/
 │   ├── routers/
 │   ├── models/
 │   ├── utils/
-│   ├── .env
+│   ├── .env            → !!!
 │   └── main.py
 │
 ├── frontend/       → Vite + React
 │   ├── src/
+│   ├── .env            → !!!
 │   └── ...
 │
 ├── docker-compose.yaml
@@ -161,7 +162,28 @@ deck-of-cards/
 
 ---
 
-# 🔐 5. Configuración del archivo .env
+# 🔐 5. Configuración de los archivos .env
+
+El frontend necesita un archivo `.env` para especificar el puerto del backend
+
+📍 **Este archivo debe estar dentro de la carpeta `frontend/`**, así:
+
+```
+deck-of-cards/
+│
+├── frontend/ 
+│   ├── src/
+│   ├── .env   ← AQUÍ
+│   └── ...
+```
+
+Contenido obligatorio del `.env`:
+
+```
+VITE_API_URL=http://localhost:8000/api
+```
+
+Por otro lado,
 
 El backend necesita un archivo `.env` para funcionar correctamente, especialmente para el login con Google.
 
@@ -177,7 +199,7 @@ deck-of-cards/
 │   └── ...
 ```
 
-Contenido mínimo del `.env`:
+Contenido obligatorio del `.env`:
 
 ```
 GOOGLE_CLIENT_ID=tu_client_id_de_google      //id del cliente, debe ser el mismo del proyecto de google cloud.
