@@ -32,7 +32,6 @@ Incluye:
 
 **Deck of Cards – TFG** es una herramienta completa diseñada para construir, validar y evaluar **funciones de pertenencia difusas** mediante el método **Deck of Cards (DoC)**, tanto en su versión **T1MF** (tipo-1) como **IT2MF** (tipo-2 intervalar).  
 
-> [!INFO] 
 > El sistema combina un backend robusto en **FastAPI + MongoDB**, un frontend moderno en **React + Vite**, autenticación por email y **Google OAuth 2.0**, y un sistema de historial por usuario para guardar y recuperar trabajos anteriores.
 
 ---
