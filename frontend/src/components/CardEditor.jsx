@@ -10,9 +10,9 @@ export default function CardEditor({ index, level, handleLevelChange, handleRemo
         )}
         <span className="absolute top-3 left-4 text-sm font-black text-slate-300">{index + 1}</span>
         <span className="absolute bottom-3 right-4 text-sm font-black text-slate-300 rotate-180">{index + 1}</span>
-        <input type="text" placeholder="Etiqueta..." value={level} onChange={(e) => handleLevelChange(index, e.target.value)} className={`w-10/12 text-center text-lg font-bold text-slate-700 bg-transparent border-b-2 border-dashed outline-none pb-1 ${error ? 'border-red-300 focus:border-red-500 placeholder:text-red-200' : 'border-slate-300 focus:border-blue-500'}`} />
+        <input type="text" placeholder="Término..." value={level} onChange={(e) => handleLevelChange(index, e.target.value)} className={`w-10/12 text-center text-lg font-bold text-slate-700 bg-transparent border-b-2 border-dashed outline-none pb-1 ${error ? 'border-red-300 focus:border-red-500 placeholder:text-red-200' : 'border-slate-300 focus:border-blue-500'}`} />
       </div>
-      <div className="h-6 mt-2">{error && <p className="text-red-500 text-xs font-semibold animate-pulse">Escribe una etiqueta</p>}</div>
+      <div className="h-6 mt-2">{error && <p className="text-red-500 text-xs font-semibold animate-pulse">Escribe un término</p>}</div>
     </div>
   );
 }

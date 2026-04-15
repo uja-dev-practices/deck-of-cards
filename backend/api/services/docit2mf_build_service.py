@@ -24,7 +24,7 @@ def _extract_bounds(values: List[Union[int, List[int], tuple]], mode: str) -> Li
 
 def _sort_nodes(nodes):
     """Ordena los nodos por su coordenada X."""
-    return sorted(nodes, key=lambda p: p[0])
+    return sorted([list(p) for p in nodes], key=lambda p: p[0])
 
 
 def _enforce_upper_ge_lower(lower, upper):
@@ -34,14 +34,14 @@ def _enforce_upper_ge_lower(lower, upper):
     """
     # left nodes
     for i in range(len(lower["left_nodes"])):
-        lx, ly = lower["left_nodes"][i]
-        ux, uy = upper["left_nodes"][i]
+        ly = lower["left_nodes"][i][1]
+        uy = upper["left_nodes"][i][1]
         upper["left_nodes"][i][1] = max(uy, ly)
 
     # right nodes
     for i in range(len(lower["right_nodes"])):
-        lx, ly = lower["right_nodes"][i]
-        ux, uy = upper["right_nodes"][i]
+        ly = lower["right_nodes"][i][1]
+        uy = upper["right_nodes"][i][1]
         upper["right_nodes"][i][1] = max(uy, ly)
 
     return upper
@@ -73,9 +73,13 @@ def build_it2mf_from_level(level: DoCIT2MFRequest):
         right_nodes_x=level.right_nodes_x,
         right_blank_cards=right_min,
     )
-    lower = build_doc_mf_level(lower_level)
 
-    # Ordenar nodos LMF
+    # Convertir a dict para poder manipular como diccionario
+    lower = build_doc_mf_level(lower_level)
+    if hasattr(lower, "model_dump"):
+        lower = lower.model_dump()
+
+    # Asegurar que los nodos son listas mutables y ordenar
     lower["left_nodes"] = _sort_nodes(lower["left_nodes"])
     lower["right_nodes"] = _sort_nodes(lower["right_nodes"])
 
@@ -94,9 +98,13 @@ def build_it2mf_from_level(level: DoCIT2MFRequest):
         right_nodes_x=level.right_nodes_x,
         right_blank_cards=right_max,
     )
-    upper = build_doc_mf_level(upper_level)
 
-    # Ordenar nodos UMF
+    # Convertir a dict para poder manipular como diccionario
+    upper = build_doc_mf_level(upper_level)
+    if hasattr(upper, "model_dump"):
+        upper = upper.model_dump()
+
+    # Asegurar que los nodos son listas mutables y ordenar
     upper["left_nodes"] = _sort_nodes(upper["left_nodes"])
     upper["right_nodes"] = _sort_nodes(upper["right_nodes"])
 

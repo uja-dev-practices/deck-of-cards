@@ -1,6 +1,6 @@
 # models/docit2mf_models.py
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, Field, field_validator, ValidationInfo
 from typing import List, Tuple, Union
 
 
@@ -9,8 +9,8 @@ BlankCardInput = Union[int, Tuple[int, int], List[int]]
 
 class DoCIT2MFRequest(BaseModel):
     term: str
-    core: Tuple[float, float]
-    support: Tuple[float, float]
+    core: tuple[float, float] = Field(..., description="Núcleo del conjunto difuso: [a, b]")
+    support: tuple[float, float] = Field(..., description="Soporte del conjunto difuso: [c, d]")
 
     left_nodes_x: List[float]
     left_blank_cards: List[BlankCardInput]
@@ -28,20 +28,20 @@ class DoCIT2MFRequest(BaseModel):
     def core_valid(cls, v):
         a, b = v
         if a > b:
-            raise ValueError("El núcleo debe cumplir a <= b.")
+            raise ValueError("el 'Inicio del Núcleo' debe ser menor o igual al 'Fin del Núcleo'.")
         return v
 
     @field_validator("support")
-    def support_valid(cls, v, info):
+    def support_valid(cls, v, info: ValidationInfo):
         c, d = v
-        if c >= d:
-            raise ValueError("El soporte debe cumplir c < d.")
+        if c > d:
+            raise ValueError("el 'Inicio del Soporte' debe ser menor o igual al 'Fin del Soporte'.")
 
         core = info.data.get("core")
         if core:
             a, b = core
-            if not (c <= a <= b <= d):
-                raise ValueError("El núcleo debe estar dentro del soporte.")
+            if not (c <= a and b <= d):
+                raise ValueError("los valores del 'Núcleo' deben estar estrictamente dentro del 'Soporte'.")
         return v
 
     @field_validator("left_blank_cards", "right_blank_cards")

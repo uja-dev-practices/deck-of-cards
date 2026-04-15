@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Step1BaseScale from '../components/editor/Step1BaseScale';
 import Step2FuzzyModeling from '../components/editor/Step2FuzzyModeling';
 import SubscaleModal from '../components/editor/SubscaleModal';
-import { calculateValueFunction, buildFuzzyGraph } from '../services/docService';
+import { calculateValueFunction, buildFuzzyGraph, saveToHistory } from '../services/docService';
 import Step3FinalGraph from '../components/editor/Step3FinalGraph';
 
 export default function DocEditor() {
@@ -24,6 +24,7 @@ export default function DocEditor() {
 
   // ESTADO: FASE 3
   const [finalResult, setFinalResult] = useState(null);
+  const [submitError, setSubmitError] = useState(null);
 
   // MANEJADORES: FASE 1
   const handleCriterionChange = (val) => { setCriterionName(val); if (errors.criterion) setErrors({ ...errors, criterion: false }); };
@@ -119,6 +120,7 @@ export default function DocEditor() {
 
   // Petición para el endpoint "build"
   const handleFinalSubmit = async () => {
+    setSubmitError(null);
     const scaleKeys = Object.keys(baseScale);
     
     const payload = {
@@ -157,14 +159,64 @@ export default function DocEditor() {
     setIsLoading(true);
     try {
       const result = await buildFuzzyGraph(payload);
-      console.log("RESPUESTA DEL BACKEND:", result);
-      
       setFinalResult(result);
       setStep(3);
-
     } catch (error) {
-      console.error(error);
-      alert("Error del servidor: \n" + JSON.stringify(error, null, 2));
+      
+      let friendlyMessage = "Ocurrió un error al procesar la solicitud.";
+      const errorData = error.backendData || error.response?.data || error;
+
+      if (errorData.detail) {
+          if (errorData.detail === "Invalid input data") {
+               friendlyMessage = "Revisa los valores del Soporte y Núcleo. Asegúrate de que el 'Inicio del Soporte' sea menor o igual al 'Fin del Soporte', y que el 'Núcleo' esté dentro del 'Soporte'.";
+          } else if (typeof errorData.detail === 'string') {
+              friendlyMessage = errorData.detail;
+          }
+      } else if (errorData.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
+           friendlyMessage = errorData.errors.map(err => {
+              let cleanMsg = err.msg ? err.msg.replace("Value error, ", "") : "Valor incorrecto";
+              if (err.loc && err.loc.includes("levels")) {
+                const levelIndex = err.loc[err.loc.indexOf("levels") + 1];
+                const termName = scaleKeys[levelIndex] || `Nivel ${Number(levelIndex) + 1}`;
+                return `• En la etiqueta "${termName}": ${cleanMsg}`;
+              }
+              return `• ${cleanMsg}`;
+            }).join("\n");
+      }
+
+      setSubmitError(friendlyMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Petición para guardar en el historial
+  const handleSaveToHistory = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert("Para guardar tu modelo debes iniciar sesión primero. Puedes seguir visualizando la gráfica sin problema.");
+      return;
+    }
+
+    const defaultName = criterionName ? `Modelo de ${criterionName}` : "Mi nueva gráfica DoC-IT2MF";
+    const historyName = prompt("Dale un nombre a este modelo para guardarlo en tu historial:", defaultName);
+    
+    if (!historyName) return; 
+
+    setIsLoading(true);
+    try {
+      const payload = {
+        name: historyName,
+        results: finalResult.levels || finalResult.results 
+      };
+
+      await saveToHistory(payload);
+      
+      alert("¡Gráfica guardada con éxito en tu historial!");
+      
+    } catch (error) {
+      console.error("Error al guardar en el historial:", error);
+      alert("Hubo un problema al guardar el modelo: " + error);
     } finally {
       setIsLoading(false);
     }
@@ -191,18 +243,22 @@ export default function DocEditor() {
           onBack={() => setStep(1)}
           subscales={subscales}
           onOpenSubscale={handleOpenSubscale}
+          submitError={submitError}
         />
       )}
 
       {step === 3 && finalResult && (
-        <div className="flex flex-col gap-6 w-full">
-          <Step3FinalGraph data={finalResult} />
+        <div className="flex flex-col w-full">
+          <Step3FinalGraph data={finalResult} criterionName={criterionName} />
 
           <button 
-            onClick={() => console.log("Lógica para guardar")}
-            className="mt-4 px-8 py-3 bg-blue-600 text-white font-bold rounded-xl shadow-md hover:bg-blue-700 w-fit self-end transition-all"
+            onClick={handleSaveToHistory}
+            disabled={isLoading}
+            className={`mt-4 px-8 py-3 font-bold rounded-xl shadow-md w-fit self-end transition-all ${
+              isLoading ? 'bg-slate-400 text-slate-100 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'
+            }`}
           >
-            Finalizar y Guardar
+            {isLoading ? 'Guardando...' : 'Guardar'}
           </button>
         </div>
       )}

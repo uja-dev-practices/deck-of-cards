@@ -22,7 +22,6 @@ export default function Controls({
       </h3>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Lado izquierdo (Pendiente ascendente) */}
         <div className="space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
           <div>
             <label className="flex justify-between text-xs font-bold text-slate-600 mb-1">
@@ -37,7 +36,6 @@ export default function Controls({
             <input type="range" min={absoluteMin} max={absoluteMax} step="0.001" value={currentMf.coreStart} onChange={(e) => updateCurrentMf('coreStart', e.target.value)} className="w-full cursor-pointer h-1.5" style={{ accentColor: selectedColor }} />
           </div>
           
-          {/* Botón subescala izquierda */}
           <div className="pt-2 border-t border-slate-200 flex justify-end">
             <button 
               onClick={() => onOpenSubscale(selectedTerm, 'left', leftSubscale)}
@@ -48,22 +46,20 @@ export default function Controls({
           </div>
         </div>
 
-        {/* Lado derecho (Pendiente descendente) */}
         <div className="space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
-          <div>
-            <label className="flex justify-between text-xs font-bold text-slate-600 mb-1">
-              <span>Fin del Núcleo (Punto superior)</span><span style={{ color: selectedColor }}>{currentMf.coreEnd.toFixed(3)}</span>
-            </label>
-            <input type="range" min={absoluteMin} max={absoluteMax} step="0.001" value={currentMf.coreEnd} onChange={(e) => updateCurrentMf('coreEnd', e.target.value)} className="w-full cursor-pointer h-1.5" style={{ accentColor: selectedColor }} />
-          </div>
           <div>
             <label className="flex justify-between text-xs font-bold text-slate-600 mb-1">
               <span>Fin del Soporte (Punto inferior)</span><span style={{ color: selectedColor }}>{currentMf.supportEnd.toFixed(3)}</span>
             </label>
             <input type="range" min={absoluteMin} max={absoluteMax} step="0.001" value={currentMf.supportEnd} onChange={(e) => updateCurrentMf('supportEnd', e.target.value)} className="w-full cursor-pointer h-1.5" style={{ accentColor: selectedColor, opacity: 0.7 }} />
           </div>
+          <div>
+            <label className="flex justify-between text-xs font-bold text-slate-600 mb-1">
+              <span>Fin del Núcleo (Punto superior)</span><span style={{ color: selectedColor }}>{currentMf.coreEnd.toFixed(3)}</span>
+            </label>
+            <input type="range" min={absoluteMin} max={absoluteMax} step="0.001" value={currentMf.coreEnd} onChange={(e) => updateCurrentMf('coreEnd', e.target.value)} className="w-full cursor-pointer h-1.5" style={{ accentColor: selectedColor }} />
+          </div>
 
-          {/* Botón subescala derecha */}
           <div className="pt-2 border-t border-slate-200 flex justify-end">
             <button 
               onClick={() => onOpenSubscale(selectedTerm, 'right', rightSubscale)}
