@@ -1,6 +1,4 @@
-# Deck of Cards <img align="right" width="60" height="40" alt="image" src="https://github.com/user-attachments/assets/e654df77-be36-4d38-8b5a-a3d3eac462e3" />
-
-
+# Deck of Cards <img align="right" width="38" src="frontend/public/favicon.svg" alt="Logo de Deck of Cards" />
 
 <div align="center">
 
@@ -28,9 +26,75 @@ Incluye:
 
 ---
 
+# 📸 Capturas de Pantalla
+
+## 🛠️ Proceso de Modelado (3 Pasos)
+El núcleo de la aplicación guía al experto a través de tres fases intuitivas para transformar cartas físicas en modelos matemáticos.
+
+<table width="100%">
+  <tr>
+    <td align="center">
+      <p><b>Paso 1: Definición de la Escala Base</b></p>
+      <img src="https://github.com/user-attachments/assets/65b7ab8a-732e-461d-a418-41721d8f0810" width="100%" alt="Paso 1">
+    </td>
+  </tr>
+</table>
+
+<table width="100%">
+  <tr>
+    <td align="center">
+      <p><b>Paso 2: Modelado Difuso</b></p>
+      <img src="https://github.com/user-attachments/assets/cfc166b6-6c6d-4eed-8c18-ea65463bedcd" width="100%" alt="Paso 2 - Gráfica">
+      <br><br>
+      <p><b>Paso 2: Definición de Subescalas e Intervalos</b></p>
+      <img src="https://github.com/user-attachments/assets/58bf477d-6f45-451e-81cf-76a5d7d9edc2" width="100%" alt="Paso 2 - Subescalas">
+    </td>
+  </tr>
+</table>
+
+<table width="100%">
+  <tr>
+    <td align="center">
+      <p><b>Paso 3: Visualización de la Función Final</b></p>
+      <img src="https://github.com/user-attachments/assets/eab13dd3-0d3b-4441-babe-b1dfee49f431" width="100%" alt="Paso 3">
+    </td>
+  </tr>
+</table>
+
+## 📂 Historial
+
+<table width="100%">
+  <tr>
+    <td align="center">
+      <p><b>Listado del Historial de Modelos</b></p>
+      <img src="https://github.com/user-attachments/assets/3502c9d5-e566-476b-a98a-406397ec7eb4" width="100%" alt="Historial 1">
+      <br><br>
+      <p><b>Vista de Detalle de un Modelo Guardado</b></p>
+      <img src="https://github.com/user-attachments/assets/059d5512-3e9d-4429-8b18-81df9afeccfe" width="100%" alt="Historial 2">
+    </td>
+  </tr>
+</table>
+
+## 🔐 Acceso a la Plataforma
+
+<table width="100%">
+  <tr valign="top">
+    <td width="50%" align="center">
+      <p><b>Login</b></p>
+      <img src="https://github.com/user-attachments/assets/d30767ab-7968-47f9-a033-8eb2a622f271" width="100%" alt="Login">
+    </td>
+    <td width="50%" align="center">
+      <p><b>Registro</b></p>
+      <img src="https://github.com/user-attachments/assets/88500610-1f39-4b8f-851e-1d768eee320e" width="100%" alt="Registro">
+    </td>
+  </tr>
+</table>
+
+---
+
 # ⚡ 0. ¿En qué consiste?
 
-**Deck of Cards – TFG** es una herramienta completa diseñada para construir, validar y evaluar **funciones de pertenencia difusas** mediante el método **Deck of Cards (DoC)**, tanto en su versión **T1MF** (tipo-1) como **IT2MF** (tipo-2 intervalar).  
+**Deck of Cards** es una herramienta completa diseñada para construir, validar y evaluar **funciones de pertenencia difusas** mediante el método **Deck of Cards (DoC)**, tanto en su versión **T1MF** (tipo-1) como **IT2MF** (tipo-2 intervalar).  
 
 > El sistema combina un backend robusto en **FastAPI + MongoDB**, un frontend moderno en **React + Vite**, autenticación por email y **Google OAuth 2.0**, y un sistema de historial por usuario para guardar y recuperar trabajos anteriores.
 
@@ -109,6 +173,13 @@ docker compose up --build
 >- Backend (python) → http://localhost:8000 
 >- Frontend (react) → http://localhost:5173  
 >- Base de Datos (mongodb) → puerto 27017
+
+> [!NOTE]
+> **Nota para desarrolladores:** Gracias a Docker, no necesitas instalar nada localmente para que la app funcione. Sin embargo, para que tu editor de código reconozca las librerías, tenga autocompletado y no muestre errores de importación, te recomendamos entrar a las carpetas y descargar las dependencias en tu máquina local:
+> ```bash
+> cd frontend && npm install
+> cd ../backend && pip install -r requirements.txt
+> ```
 
 ---
 
@@ -282,8 +353,21 @@ Con esto, ya puedes:
 - Levantar el sistema con Docker  
 - Usar login normal y login con Google  
 
-Y ...
+Y... ¡Proyecto listo para ejecutarse en local!
 
-¡Proyecto listo para ejecutarse en local!
+## 👥 Autores y Equipo
 
-Gracias por llegar hasta aquí ;)
+Este proyecto es fruto de la colaboración académica con la **Universidad de Jaén**.
+
+| Rol | Desarrollador | GitHub |
+| :--- | :--- | :--- |
+| **Frontend** | Alexis López Moral | [@AlexisLopez-Dev](https://github.com/AlexisLopez-Dev) |
+| **Backend** | Mireya Cueto Garrido | [@MireyaCueto](https://github.com/MireyaCueto) |
+
+### 🎓 Dirección y Tutorización
+* **Director del proyecto:** Luis Martínez López
+
+---
+<p align="center">
+  Realizado con ❤️ en la Universidad de Jaén
+</p>
