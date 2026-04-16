@@ -58,7 +58,7 @@ export default function Register() {
               type="text" required autoComplete="username"
               className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-slate-50 focus:bg-white"
               value={username} onChange={(e) => setUsername(e.target.value)}
-              placeholder="Ej: alexis99"
+              placeholder="Ej: usuario99"
             />
           </div>
 
