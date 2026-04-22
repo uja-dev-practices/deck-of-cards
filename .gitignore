@@ -4,8 +4,6 @@ __pycache__/
 *$py.class
 
 # Variables de entorno
-.env
-.env*
 
 
 # Configuraciones del editor
