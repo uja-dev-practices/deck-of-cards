@@ -23,7 +23,7 @@ services:
       - /app/node_modules
 
   db:
-    image: mongo:6
+    image: mongo:4.4
     container_name: mongo
     restart: always
     ports:
