@@ -292,37 +292,21 @@ Un ejemplo de página de donde sacar las tres primeras claves:
 Para activar el login con Google, debes crear credenciales OAuth 2.0.
 Para ello sigue estos pasos:
 
-### 🟦 Paso 1 — Entra en Google Cloud Console  
+### 🟦 Paso 1 — Entra en Google Cloud Console y haz login
 https://console.cloud.google.com
 
 ### 🟩 Paso 2 — Crea un proyecto  
-Menú superior → “Seleccionar proyecto” → “Nuevo proyecto”.
+Menú superior → “Seleccionar proyecto” → “Nuevo proyecto” → Elige un nombre para tu proyecto.
 
-### 🟧 Paso 3 — Configura la pantalla de consentimiento OAuth
-
-<img width="750" height="731" alt="image" src="https://github.com/user-attachments/assets/fb06952a-ddde-4a15-87f8-162b53882d00" />
-
-
-En el buscador escribe: **OAuth consent screen**  ó ve a la página que se muestra en la captura superior.
-
-Selecciona **Información de la página**: 
-
-→ Rellena los datos necesarios (no hace falta poner un dominio si lo tienes en local) → Guardar
-
-
-<img width="1398" height="470" alt="image" src="https://github.com/user-attachments/assets/d38ff3b4-5ee7-4608-ad62-515e38114392" />
-
-
-### 🟨 Paso 4 — Crea las credenciales OAuth  
-Menú lateral:  
-**APIs & Services → Credentials → Create Credentials → OAuth Client ID**
+### 🟨 Paso 3 — Crea las credenciales OAuth  
+En el menú lateral:  
+**APIs y Servicios → Credenciales → Crear Credenciales → ID de Cliente OAuth**
 
 <img width="1003" height="815" alt="image" src="https://github.com/user-attachments/assets/8a9e61fd-f4dc-4b33-aac3-3e793ceac8b3" />
-
-
+<img width="1247" height="347" alt="image" src="https://github.com/user-attachments/assets/900c8236-63e5-4a2b-b642-7c901108e09e" />
 
 Tipo de aplicación:  
-✔ **Web application**
+✔ **Aplicación Web**
 
 Añade en `Orígenes autorizados de javascript`:
 http://localhost:8000
@@ -330,16 +314,37 @@ http://localhost:8000
 Añade este Redirect URI obligatorio:
 http://localhost:8000/api/auth/google/callback
 
+Después te saldrá una ventana para descargarte las claves en formato json (hazlo para que no se pierdan)
+
+Finalmente podrás ver la pantalla final (desde aquí no se puede acceder al secreto del cliente, solo puedes generar uno nuevo):
+
 <img width="1911" height="847" alt="image" src="https://github.com/user-attachments/assets/c63454ac-00a5-43e3-9f53-25b4862292df" />
 
-
-### 🟥 Paso 5 — Copia tus claves  
+### 🟧 Paso 4 — Copia tus claves  
 Google te mostrará:
 
 - **Client ID**
 - **Client Secret**
 
-Pégalos en tu `.env` dentro de `backend/`. Asegúrate de que las copias correctamente.
+Pégalos en tu `.env` dentro de `backend/`. Asegúrate de que las copias correctamente cada una en su lugar.
+
+### 🟥 Paso 5 — Configura la pantalla de consentimiento OAuth
+
+En el buscador escribe: **OAuth consent screen** o busca en el menu lateral la siguiente opción:
+
+<img width="750" height="731" alt="image" src="https://github.com/user-attachments/assets/fb06952a-ddde-4a15-87f8-162b53882d00" />
+
+Configura los datos de tu proyecto seleccionando **Información de la página**:
+
+→ Rellena los datos necesarios (no hace falta poner un dominio si lo tienes en local) → Guardar
+
+<img width="1398" height="470" alt="image" src="https://github.com/user-attachments/assets/d38ff3b4-5ee7-4608-ad62-515e38114392" />
+
+### 🟪 Paso 6 — Publicar la app
+
+Publica tu app accediendo a: (Este paso es muy importante para permitir acceder a cualquier correo)
+
+<img width="777" height="440" alt="image" src="https://github.com/user-attachments/assets/b06fabc9-9b36-46dd-a071-7ce7f28b8bca" />
 
 ---
 
