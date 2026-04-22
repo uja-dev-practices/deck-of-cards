@@ -4,7 +4,7 @@ services:
       context: ./backend
     container_name: backend
     ports:
-      - "8000:8000"
+      - "8070:8000"
     volumes:
       - ./backend:/app
     depends_on:
@@ -17,7 +17,7 @@ services:
       context: ./frontend
     container_name: frontend
     ports:
-      - "5173:5173"
+      - "8071:5173"
     volumes:
       - ./frontend:/app
       - /app/node_modules
