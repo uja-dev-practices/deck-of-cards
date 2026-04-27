@@ -3,8 +3,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Variables de entorno
-
+# Variables de entorno (solo ignoramos las locales/sobre-escrituras)
+# Mantenemos .env y .env.example versionados para compartir la configuración
+# de producción y el esqueleto de variables. Nunca subimos .env.local.
+.env.local
+.env.*.local
 
 # Configuraciones del editor
 .vscode/
