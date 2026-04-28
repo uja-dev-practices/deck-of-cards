@@ -21,6 +21,8 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+    depends_on:
+      - backend
 
   db:
     image: mongo:4.4
