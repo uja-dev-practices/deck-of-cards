@@ -9,6 +9,9 @@ __pycache__/
 .env.local
 .env.*.local
 
+# Override de Docker Compose para desarrollo local (no debe llegar a producción)
+docker-compose.override.yml
+
 # Configuraciones del editor
 .vscode/
 .idea/
