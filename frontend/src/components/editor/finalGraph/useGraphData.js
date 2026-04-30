@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { CHART_COLORS } from '../../../config';
 
-const interpolateY = (x, nodes) => {
+export const interpolateY = (x, nodes) => {
   if (!nodes || nodes.length === 0) return null;
   const EPSILON = 1e-5;
   const MICRO_STEP = 0.0001;
