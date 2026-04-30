@@ -86,7 +86,7 @@ const Step3FinalGraph = memo(({ data, criterionName }) => {
 
       {/* Evaluador Manual */}
       {isReady && sortedResults.length > 0 && (
-        <div className="mt-4 pt-4 border-t border-slate-100 relative z-10">
+        <div className="mt-4 pt-4 border-t border-slate-100 relative z-10 pl-[60px]">
           <MembershipEvaluator sortedResults={sortedResults} />
         </div>
       )}
