@@ -19,27 +19,27 @@ const filterActive = (results) =>
 
 const TermResult = ({ result }) => {
   const uncertainty = result.isType2 ? Math.abs(result.upper - result.lower) : 0;
-  const isSimple = !result.isType2 || uncertainty < 0.001;
+  const isSimple = !result.isType2 || uncertainty <= 0.001;
   const displayY = result.isType2 ? result.upper : result.y;
 
   return (
-    <div className="flex flex-col text-xs font-medium bg-slate-50 px-3 py-2 rounded-xl border border-slate-100 shrink-0">
-      <span className="uppercase font-black mb-1 tracking-wide leading-none" style={{ color: result.color }}>
+    <div className="flex flex-col text-xs font-medium bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+      <span className="uppercase font-black mb-1.5" style={{ color: result.color }}>
         {result.term}
       </span>
       {isSimple ? (
-        <span className="text-slate-700 flex justify-between gap-2">
+        <span className="text-slate-600 flex justify-between gap-4">
           Pertenencia: <b>{displayY.toFixed(3)}</b>
         </span>
       ) : (
         <>
-          <span className="text-slate-600 flex justify-between gap-2">
-            Inferior: <b>{result.lower.toFixed(3)}</b>
+          <span className="text-slate-600 flex justify-between gap-4">
+            Mínimo: <b>{result.lower.toFixed(3)}</b>
           </span>
-          <span className="text-slate-600 flex justify-between gap-2 mt-0.5">
-            Superior: <b>{result.upper.toFixed(3)}</b>
+          <span className="text-slate-600 flex justify-between gap-4 mt-0.5">
+            Máximo: <b>{result.upper.toFixed(3)}</b>
           </span>
-          <span className="text-slate-500 font-bold mt-1 pt-1 border-t border-slate-200 flex justify-between gap-2">
+          <span className="text-slate-500 font-bold mt-1.5 pt-1.5 border-t border-slate-200 flex justify-between gap-4">
             Incertidumbre: <span>{uncertainty.toFixed(3)}</span>
           </span>
         </>
