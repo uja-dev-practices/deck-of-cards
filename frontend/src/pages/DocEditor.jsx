@@ -5,6 +5,15 @@ import SubscaleModal from '../components/editor/SubscaleModal';
 import { calculateValueFunction, buildFuzzyGraph, saveToHistory } from '../services/docService';
 import Step3FinalGraph from '../components/editor/Step3FinalGraph';
 
+// Step de la rejilla numérica de los puntos de la función de pertenencia.
+// El <input type="number"> de Controls usa este mismo step (0.001), así que
+// guardamos SIEMPRE en este grid: evita que valores 4-decimales del backend
+// (p.ej. 0.3017) contaminen el estado, lo cual disparaba dos bugs en el UI:
+//   · stepMismatch en hover ("los valores válidos más aproximados son…")
+//   · flechas que no llegan al máximo (paraban en 0.9997 con max=1).
+const MF_STEP = 0.001;
+const snapToMfStep = (v) => Math.round(Number(v) / MF_STEP) * MF_STEP;
+
 export default function DocEditor() {
   const [step, setStep] = useState(1); 
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +55,10 @@ export default function DocEditor() {
       const baseResult = await calculateValueFunction(payloadBase);
       setBaseScale(baseResult.values);
       const initialMfs = {};
-      Object.entries(baseResult.values).forEach(([name, value]) => { initialMfs[name] = { supportStart: value, coreStart: value, coreEnd: value, supportEnd: value }; });
+      Object.entries(baseResult.values).forEach(([name, value]) => {
+        const v = snapToMfStep(value);
+        initialMfs[name] = { supportStart: v, coreStart: v, coreEnd: v, supportEnd: v };
+      });
       setMfDefinitions(initialMfs);
       setSelectedTerm(Object.keys(baseResult.values)[0]);
       setStep(2);
@@ -56,22 +68,24 @@ export default function DocEditor() {
   // MANEJADORES: FASE 2
   const updateCurrentMf = (field, value) => {
     if (!selectedTerm) return;
-    let numValue = parseFloat(value);
+    // Snap al grid de 3 decimales antes de hacer cualquier comparación,
+    // para que el estado nunca guarde más precisión que la que muestra el input.
+    let numValue = snapToMfStep(value);
     setMfDefinitions(prev => {
       const scaleKeys = Object.keys(baseScale);
       const selectedIndex = scaleKeys.indexOf(selectedTerm);
       let prevCoreEnd = 0, prevSupportEnd = 0, nextCoreStart = 1, nextSupportStart = 1;
 
       if (selectedIndex > 0) {
-        prevCoreEnd = prev[scaleKeys[selectedIndex - 1]].coreEnd;
-        prevSupportEnd = prev[scaleKeys[selectedIndex - 1]].supportEnd;
+        prevCoreEnd = snapToMfStep(prev[scaleKeys[selectedIndex - 1]].coreEnd);
+        prevSupportEnd = snapToMfStep(prev[scaleKeys[selectedIndex - 1]].supportEnd);
       }
       if (selectedIndex < scaleKeys.length - 1) {
-        nextCoreStart = prev[scaleKeys[selectedIndex + 1]].coreStart;
-        nextSupportStart = prev[scaleKeys[selectedIndex + 1]].supportStart;
+        nextCoreStart = snapToMfStep(prev[scaleKeys[selectedIndex + 1]].coreStart);
+        nextSupportStart = snapToMfStep(prev[scaleKeys[selectedIndex + 1]].supportStart);
       }
 
-      const anchor = baseScale[selectedTerm];
+      const anchor = snapToMfStep(baseScale[selectedTerm]);
 
       if (field === 'supportStart' && numValue < prevCoreEnd) numValue = prevCoreEnd;
       if (field === 'coreStart' && numValue < prevSupportEnd) numValue = prevSupportEnd;

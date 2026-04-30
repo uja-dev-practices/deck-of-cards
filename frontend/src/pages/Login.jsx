@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
+import { API_BASE_URL } from '../config';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 
 export default function Login() {
@@ -66,7 +67,7 @@ export default function Login() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:8000/api/auth/google/login";
+    window.location.href = `${API_BASE_URL}/auth/google/login`;
   };
 
   return (

@@ -4,26 +4,30 @@ services:
       context: ./backend
     container_name: backend
     ports:
-      - "8000:8000"
+      - "8070:8000"
     volumes:
       - ./backend:/app
     depends_on:
       - db
     env_file:
-      - backend\.env
+      - backend/.env
 
   frontend:
     build:
       context: ./frontend
     container_name: frontend
     ports:
-      - "5173:5173"
+      - "8071:5173"
     volumes:
       - ./frontend:/app
       - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8070/api
+    depends_on:
+      - backend
 
   db:
-    image: mongo:6
+    image: mongo:4.4
     container_name: mongo
     restart: always
     ports:
