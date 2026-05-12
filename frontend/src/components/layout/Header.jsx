@@ -28,7 +28,7 @@ export default function Header() {
         <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity whitespace-nowrap">
           <img src="/favicon.svg" alt="Deck of Cards Logo" className="w-10 h-10 shadow-sm rounded-xl object-contain" />
           <span className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 hidden sm:block">
-            Deck of Cards
+            Deck of Cardssss
           </span>
         </Link>
 
