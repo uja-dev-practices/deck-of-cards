@@ -18,7 +18,7 @@
 
 Incluye:
 
-- Backend en **FastAPI + MongoDB**
+- Backend en **FastAPI + MongoDBa**
 - Frontend en **Vite + React**
 - Contenedores Docker para todo el proyecto
 - Sistema de historial por usuario
