@@ -13,7 +13,7 @@
 </div>
 
 <div align="center">
-  <strong>Proyecto completo con backend en FastAPI + MongoDB, frontend en React + Vite, contenedores Docker, autenticación por email y Google OAuth 2.0, y sistema de cálculo DoC-MF / DoC-IT2MF.</strong>
+  <strong>Proyectoa completo con backend en FastAPI + MongoDB, frontend en React + Vite, contenedores Docker, autenticación por email y Google OAuth 2.0, y sistema de cálculo DoC-MF / DoC-IT2MF.</strong>
 </div>
 
 Incluye:
