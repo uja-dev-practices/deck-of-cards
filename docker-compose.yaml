@@ -22,7 +22,7 @@ services:
       - ./frontend:/app
       - /app/node_modules
     environment:
-      - VITE_API_URL=http://localhost:8070/api
+      - VITE_API_URL=/api
     depends_on:
       - backend
 
