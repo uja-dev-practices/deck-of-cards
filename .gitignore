@@ -8,6 +8,7 @@ __pycache__/
 # de producción y el esqueleto de variables. Nunca subimos .env.local.
 .env.local
 .env.*.local
+.env
 
 # Override de Docker Compose para desarrollo local (no debe llegar a producción)
 docker-compose.override.yml

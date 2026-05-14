@@ -10,6 +10,12 @@ export default defineConfig({
   ],
   server: {
     host: '0.0.0.0',
-    allowedHosts: true
+    allowedHosts: true,
+    proxy: {
+      '/api': {
+        target: process.env.BACKEND_URL || 'http://backend:8000',
+        changeOrigin: true
+      }
+    }
   }
 })
