@@ -76,6 +76,8 @@ async def google_callback(request: Request):
             "password_hash": None,
             "google_id": google_id,
             "history": [],
+            "is_email_verified": True,
+            "email_verified_at": datetime.utcnow(),
         }
         result = await users_collection.insert_one(new_user)
         user_id = result.inserted_id
@@ -95,7 +97,18 @@ async def google_callback(request: Request):
 
     await users_collection.update_one(
         {"_id": user_id},
-        {"$set": {"token": token}}
+        {
+            "$set": {
+                "token": token,
+                "is_email_verified": True,
+            },
+            "$unset": {
+                "email_verification_code_hash": "",
+                "email_verification_expires_at": "",
+                "email_verification_attempts": "",
+                "email_verification_requested_at": "",
+            },
+        },
     )
 
     return RedirectResponse(f"{FRONTEND_URL}/login?token={token}")

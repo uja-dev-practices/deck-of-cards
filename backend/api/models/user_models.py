@@ -45,10 +45,21 @@ class UserLogin(BaseModel):
     password: str
 
 
+class EmailVerificationRequest(BaseModel):
+    email: EmailStr
+    code: str
+
+
+class EmailVerificationResendRequest(BaseModel):
+    email: EmailStr
+
+
 class UserInDB(BaseModel):
     id: Optional[str] = Field(default=None, alias="_id")
     username: str
     email: EmailStr
-    password_hash: str
+    password_hash: Optional[str] = None
     token: Optional[str] = None
     history: List[HistoryItem] = []
+    is_email_verified: bool = False
+    email_verified_at: Optional[datetime] = None

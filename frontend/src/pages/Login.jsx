@@ -62,7 +62,7 @@ export default function Login() {
       login(data);
       navigate('/');
     } catch (err) {
-      setError('Credenciales incorrectas.');
+      setError(err.response?.data?.detail || err.backendData?.detail || 'Credenciales incorrectas.');
     }
   };
 
