@@ -1,3 +1,5 @@
+import logging
+import os
 from datetime import datetime
 
 from bson import ObjectId
@@ -10,7 +12,11 @@ from api.models.user_models import (
     UserCreate,
     UserLogin,
 )
-from api.services.email_service import send_verification_email
+from api.services.email_service import (
+    EmailConfigurationError,
+    EmailDeliveryError,
+    send_verification_email,
+)
 from api.utils.email_verification import (
     MAX_EMAIL_VERIFICATION_ATTEMPTS,
     generate_verification_code,
@@ -27,6 +33,40 @@ from api.utils.security import (
 )
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+logger = logging.getLogger(__name__)
+
+
+def _env_bool(name: str, default: str = "false") -> bool:
+    return os.getenv(name, default).strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _email_send_error_detail(exc: Exception) -> str:
+    if _env_bool("EMAIL_VERIFICATION_SHOW_ERRORS"):
+        return f"No se pudo enviar el correo de verificación: {exc}"
+    return "No se pudo enviar el correo de verificación"
+
+
+async def _dispatch_verification_email(email: str, username: str, code: str) -> None:
+    try:
+        sent = send_verification_email(email, username, code)
+    except (EmailConfigurationError, EmailDeliveryError) as exc:
+        logger.error("Fallo al enviar verificación a %s: %s", email, exc)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=_email_send_error_detail(exc),
+        ) from exc
+    except Exception as exc:
+        logger.exception("Error inesperado al enviar verificación a %s", email)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=_email_send_error_detail(exc),
+        ) from exc
+
+    if not sent:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="No se pudo enviar el correo de verificación",
+        )
 
 
 @router.post("/register")
@@ -68,13 +108,10 @@ async def register_user(user: UserCreate):
     result = await users_collection.insert_one(user_doc)
 
     try:
-        send_verification_email(email, user.username, verification_code)
-    except Exception as exc:
+        await _dispatch_verification_email(email, user.username, verification_code)
+    except HTTPException:
         await users_collection.delete_one({"_id": result.inserted_id})
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="No se pudo enviar el correo de verificación",
-        ) from exc
+        raise
 
     return {
         "message": "Usuario registrado. Revisa tu correo para verificar la cuenta.",
@@ -214,13 +251,7 @@ async def resend_verification_email(payload: EmailVerificationResendRequest):
         },
     )
 
-    try:
-        send_verification_email(email, user["username"], verification_code)
-    except Exception as exc:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="No se pudo enviar el correo de verificación",
-        ) from exc
+    await _dispatch_verification_email(email, user["username"], verification_code)
 
     return {"message": "Nuevo código de verificación enviado"}
 

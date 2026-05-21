@@ -1,11 +1,23 @@
 import html
+import logging
 import os
 import smtplib
 import ssl
 from datetime import datetime
 from email.message import EmailMessage
+from email.utils import formataddr
 
 from api.utils.email_verification import EMAIL_VERIFICATION_CODE_TTL_MINUTES
+
+logger = logging.getLogger(__name__)
+
+
+class EmailConfigurationError(RuntimeError):
+    """SMTP no está configurado o falta información obligatoria."""
+
+
+class EmailDeliveryError(RuntimeError):
+    """El servidor SMTP rechazó el envío o no se pudo conectar."""
 
 
 def _env_bool(name: str, default: str = "false") -> bool:
@@ -142,46 +154,142 @@ def _build_verification_html(username: str, code: str) -> str:
 </html>"""
 
 
-def send_verification_email(recipient_email: str, username: str, code: str) -> bool:
-    smtp_host = os.getenv("SMTP_HOST")
-    if not smtp_host:
-        print(
-            "[email-verification] SMTP_HOST no configurado. "
-            f"Código para {recipient_email}: {code}"
+def _log_verification_code_for_dev(recipient_email: str, code: str) -> None:
+    logger.warning(
+        "[email-verification] Modo desarrollo: código para %s → %s",
+        recipient_email,
+        code,
+    )
+
+
+def _build_verification_message(
+    recipient_email: str,
+    username: str,
+    code: str,
+    smtp_from_email: str,
+    smtp_from_name: str,
+) -> EmailMessage:
+    message = EmailMessage()
+    message["Subject"] = "Codigo de verificacion - Deck of Cards"
+    message["From"] = formataddr((smtp_from_name, smtp_from_email))
+    message["To"] = recipient_email
+    message["Date"] = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S +0000")
+    message.set_content(_build_verification_plain(username, code))
+    message.add_alternative(_build_verification_html(username, code), subtype="html")
+    return message
+
+
+def _send_via_smtp(
+    message: EmailMessage,
+    recipient_email: str,
+    smtp_from_email: str,
+    smtp_host: str,
+    smtp_port: int,
+    smtp_username: str | None,
+    smtp_password: str | None,
+    use_tls: bool,
+    use_ssl: bool,
+) -> None:
+    context = ssl.create_default_context()
+    timeout = int(os.getenv("SMTP_TIMEOUT_SECONDS", "30"))
+    debug_level = 1 if _env_bool("SMTP_DEBUG") else 0
+
+    try:
+        if use_ssl:
+            server = smtplib.SMTP_SSL(
+                smtp_host,
+                smtp_port,
+                timeout=timeout,
+                context=context,
+            )
+        else:
+            server = smtplib.SMTP(smtp_host, smtp_port, timeout=timeout)
+
+        with server:
+            server.set_debuglevel(debug_level)
+            server.ehlo()
+            if use_tls and not use_ssl:
+                server.starttls(context=context)
+                server.ehlo()
+            if smtp_username and smtp_password:
+                server.login(smtp_username, smtp_password)
+            server.sendmail(
+                smtp_from_email,
+                [recipient_email],
+                message.as_string(),
+            )
+    except smtplib.SMTPException as exc:
+        logger.exception(
+            "Error SMTP al enviar verificación a %s via %s:%s",
+            recipient_email,
+            smtp_host,
+            smtp_port,
         )
-        return False
+        raise EmailDeliveryError(str(exc)) from exc
+    except OSError as exc:
+        logger.exception(
+            "No se pudo conectar al servidor SMTP %s:%s",
+            smtp_host,
+            smtp_port,
+        )
+        raise EmailDeliveryError(str(exc)) from exc
+
+
+def send_verification_email(recipient_email: str, username: str, code: str) -> bool:
+    recipient_email = recipient_email.strip().lower()
+    smtp_host = os.getenv("SMTP_HOST", "").strip()
+    dev_log_code = _env_bool("EMAIL_VERIFICATION_DEV_LOG_CODE")
+
+    if not smtp_host:
+        if dev_log_code:
+            _log_verification_code_for_dev(recipient_email, code)
+            return True
+        logger.error(
+            "[email-verification] SMTP_HOST no configurado; no se envió correo a %s",
+            recipient_email,
+        )
+        raise EmailConfigurationError(
+            "SMTP_HOST no está configurado en el servidor"
+        )
 
     smtp_port = int(os.getenv("SMTP_PORT", "587"))
-    smtp_username = os.getenv("SMTP_USERNAME")
-    smtp_password = os.getenv("SMTP_PASSWORD")
-    smtp_from_email = os.getenv("SMTP_FROM_EMAIL") or smtp_username
+    smtp_username = (os.getenv("SMTP_USERNAME") or "").strip()
+    smtp_password = (os.getenv("SMTP_PASSWORD") or "").replace(" ", "")
+    smtp_from_email = (os.getenv("SMTP_FROM_EMAIL") or smtp_username or "").strip()
     smtp_from_name = os.getenv("SMTP_FROM_NAME", "Deck of Cards")
     use_tls = _env_bool("SMTP_USE_TLS", "true")
     use_ssl = _env_bool("SMTP_USE_SSL", "false")
 
     if not smtp_from_email:
-        raise RuntimeError("SMTP_FROM_EMAIL o SMTP_USERNAME debe estar configurado")
+        raise EmailConfigurationError(
+            "SMTP_FROM_EMAIL o SMTP_USERNAME debe estar configurado"
+        )
 
-    message = EmailMessage()
-    message["Subject"] = "Código de verificación — Deck of Cards"
-    message["From"] = f"{smtp_from_name} <{smtp_from_email}>"
-    message["To"] = recipient_email
-    message.set_content(_build_verification_plain(username, code))
-    message.add_alternative(_build_verification_html(username, code), subtype="html")
+    message = _build_verification_message(
+        recipient_email,
+        username,
+        code,
+        smtp_from_email,
+        smtp_from_name,
+    )
 
-    context = ssl.create_default_context()
+    try:
+        _send_via_smtp(
+            message,
+            recipient_email,
+            smtp_from_email,
+            smtp_host,
+            smtp_port,
+            smtp_username,
+            smtp_password,
+            use_tls,
+            use_ssl,
+        )
+    except EmailDeliveryError:
+        if dev_log_code:
+            _log_verification_code_for_dev(recipient_email, code)
+            return True
+        raise
 
-    if use_ssl:
-        with smtplib.SMTP_SSL(smtp_host, smtp_port, context=context) as server:
-            if smtp_username and smtp_password:
-                server.login(smtp_username, smtp_password)
-            server.send_message(message)
-    else:
-        with smtplib.SMTP(smtp_host, smtp_port) as server:
-            if use_tls:
-                server.starttls(context=context)
-            if smtp_username and smtp_password:
-                server.login(smtp_username, smtp_password)
-            server.send_message(message)
-
+    logger.info("Correo de verificación enviado a %s", recipient_email)
     return True

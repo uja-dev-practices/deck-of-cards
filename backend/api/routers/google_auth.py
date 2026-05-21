@@ -1,9 +1,11 @@
+from datetime import datetime, timedelta
+from urllib.parse import quote
+
+import httpx
+import jwt
+import os
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import RedirectResponse
-from datetime import datetime, timedelta
-import httpx
-import os
-import jwt
 
 from api.database.mongodb import users_collection
 
@@ -17,11 +19,18 @@ FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
 
 @router.get("/login")
 async def google_login():
+    if not GOOGLE_CLIENT_ID or not REDIRECT_URI:
+        raise HTTPException(
+            status_code=500,
+            detail="GOOGLE_CLIENT_ID o GOOGLE_REDIRECT_URI no configurados",
+        )
+
+    redirect_uri = quote(REDIRECT_URI, safe="")
     google_auth_url = (
         "https://accounts.google.com/o/oauth2/auth"
         "?response_type=code"
         f"&client_id={GOOGLE_CLIENT_ID}"
-        f"&redirect_uri={REDIRECT_URI}"
+        f"&redirect_uri={redirect_uri}"
         "&scope=openid%20email%20profile"
         "&access_type=offline"
         "&prompt=consent"
