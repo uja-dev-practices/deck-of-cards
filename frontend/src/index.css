@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Solo escanear código fuente; evita que Tailwind/Vite procesen Dockerfile u otros archivos en /app */
+@source "./src/**/*.{js,jsx}";
+
 body {
   overflow-y: scroll;
 }

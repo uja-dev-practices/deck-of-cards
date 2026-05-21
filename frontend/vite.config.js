@@ -8,9 +8,21 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  optimizeDeps: {
+    entries: ['index.html', 'src/**/*.{js,jsx}'],
+  },
   server: {
     host: '0.0.0.0',
     allowedHosts: true,
+    watch: {
+      ignored: [
+        '**/Dockerfile',
+        '**/.dockerignore',
+        '**/docker-compose*.yml',
+        '**/docker-compose*.yaml',
+        '**/README.md',
+      ],
+    },
     proxy: {
       '/api': {
         target: process.env.BACKEND_URL || 'http://backend:8000',
