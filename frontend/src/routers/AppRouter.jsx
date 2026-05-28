@@ -4,6 +4,17 @@ import DocEditor from '../pages/DocEditor';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 import History from '../pages/History';
+import { useAuth } from '../context/AuthContext';
+
+function ProtectedHistoryRoute() {
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <History />;
+}
 
 export default function AppRouter() {
   return (
@@ -14,7 +25,7 @@ export default function AppRouter() {
           <Route path="/editor" element={<DocEditor />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/history" element={<History />} />
+          <Route path="/history" element={<ProtectedHistoryRoute />} />
         </Routes>
       </MainLayout>
     </Router>
