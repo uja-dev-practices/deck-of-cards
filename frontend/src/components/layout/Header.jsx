@@ -3,7 +3,9 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { FiLogIn, FiLogOut, FiEdit3, FiClock } from 'react-icons/fi';
 
-function NavTab({ to, isActive, icon: Icon, children }) {
+function NavTab({ to, isActive, icon, children }) {
+  const Icon = icon;
+
   return (
     <Link
       to={to}
@@ -97,20 +99,19 @@ export default function Header() {
         </Link>
 
         <div className="flex items-center gap-4 whitespace-nowrap">
-          {/* Misma navegación con o sin sesión: evita estilos distintos al loguearse */}
-          <nav
-            className="flex items-center gap-0.5 rounded-xl bg-slate-100/90 p-1"
-            aria-label="Secciones principales"
-          >
-            <NavTab to="/editor" isActive={isEditorActive} icon={FiEdit3}>
-              Editor
-            </NavTab>
-            {isAuthenticated && (
+          {isAuthenticated && (
+            <nav
+              className="flex items-center gap-0.5 rounded-xl bg-slate-100/90 p-1"
+              aria-label="Secciones principales"
+            >
+              <NavTab to="/editor" isActive={isEditorActive} icon={FiEdit3}>
+                Editor
+              </NavTab>
               <NavTab to="/history" isActive={isHistoryActive} icon={FiClock}>
                 Historial
               </NavTab>
-            )}
-          </nav>
+            </nav>
+          )}
 
           {isAuthenticated ? (
             <div className="relative border-l border-slate-200 pl-4">
@@ -154,7 +155,7 @@ export default function Header() {
               )}
             </div>
           ) : (
-            <div className="border-l border-slate-200 pl-4">
+            <div>
               <AccederButton isActive={isLoginActive} />
             </div>
           )}
