@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
-import { FiEye, FiEyeOff } from 'react-icons/fi';
+import { FiArrowLeft, FiEye, FiEyeOff } from 'react-icons/fi';
 
 export default function Register() {
     const [username, setUsername] = useState('');
@@ -95,34 +95,51 @@ export default function Register() {
     };
 
   return (
-    <div className="flex-1 flex items-center justify-center py-4">
-      <div className="max-w-md w-full bg-white p-10 rounded-3xl shadow-sm border border-slate-200">
-        
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-black text-slate-800 tracking-tight">
-            {verificationRequired ? 'Verifica tu email' : 'Crear Cuenta'}
-          </h2>
-          <p className="text-slate-500 mt-2">
-            {verificationRequired
-              ? `Introduce el código enviado a ${pendingEmail}`
-              : 'Inicia sesión para guardar tu progreso'}
+    <div className="w-full flex items-start justify-center">
+      <div className="w-full grid gap-6 lg:gap-8 lg:grid-cols-[minmax(0,1fr)_26rem]">
+        <div className="hidden lg:flex flex-col justify-center rounded-3xl border border-indigo-100 bg-linear-to-br from-indigo-50 via-violet-50 to-blue-50 p-10">
+          <p className="text-xs font-black uppercase tracking-[0.2em] text-indigo-500">Deck of Cards</p>
+          <h1 className="mt-4 text-4xl font-black tracking-tight text-slate-800">
+            Crea tu cuenta y guarda cada modelo
+          </h1>
+          <p className="mt-4 text-slate-600 leading-relaxed">
+            Registra tus criterios, conserva resultados en el historial y retoma tus análisis cuando quieras.
           </p>
+          <Link
+            to="/editor"
+            className="mt-8 inline-flex w-fit items-center rounded-xl bg-slate-900 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-slate-800"
+          >
+            <FiArrowLeft className="mr-2 h-4 w-4" />
+            Ir al editor principal
+          </Link>
         </div>
 
-        {error && (
-          <div className="bg-red-50 text-red-600 p-4 rounded-2xl text-sm font-bold mb-6 border border-red-100 text-center">
-            {error}
+        <div className="w-full bg-white p-8 sm:p-10 rounded-3xl shadow-sm border border-slate-200">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-black text-slate-800 tracking-tight">
+              {verificationRequired ? 'Verifica tu email' : 'Crear Cuenta'}
+            </h2>
+            <p className="text-slate-500 mt-2">
+              {verificationRequired
+                ? `Introduce el código enviado a ${pendingEmail}`
+                : 'Inicia sesión para guardar tu progreso'}
+            </p>
           </div>
-        )}
 
-        {infoMessage && (
-          <div className="bg-blue-50 text-blue-700 p-4 rounded-2xl text-sm font-bold mb-6 border border-blue-100 text-center">
-            {infoMessage}
-          </div>
-        )}
+          {error && (
+            <div className="bg-red-50 text-red-600 p-4 rounded-2xl text-sm font-bold mb-6 border border-red-100 text-center">
+              {error}
+            </div>
+          )}
 
-        {!verificationRequired ? (
-        <form onSubmit={handleRegisterSubmit} className="space-y-4">
+          {infoMessage && (
+            <div className="bg-blue-50 text-blue-700 p-4 rounded-2xl text-sm font-bold mb-6 border border-blue-100 text-center">
+              {infoMessage}
+            </div>
+          )}
+
+          {!verificationRequired ? (
+          <form onSubmit={handleRegisterSubmit} className="space-y-4">
           <div className="space-y-1">
             <label className="text-sm font-bold text-slate-700 ml-1">Nombre de usuario</label>
             <input 
@@ -196,9 +213,9 @@ export default function Register() {
           >
             {isSubmitting ? 'Enviando código...' : 'Registrarse'}
           </button>
-        </form>
-        ) : (
-        <form onSubmit={handleVerificationSubmit} className="space-y-4">
+          </form>
+          ) : (
+          <form onSubmit={handleVerificationSubmit} className="space-y-4">
           <div className="space-y-1">
             <label className="text-sm font-bold text-slate-700 ml-1">Código de verificación</label>
             <input
@@ -230,12 +247,13 @@ export default function Register() {
           >
             {isResending ? 'Reenviando...' : 'Reenviar código'}
           </button>
-        </form>
-        )}
+          </form>
+          )}
 
-        <p className="mt-8 text-center text-sm text-slate-500 font-medium">
-          ¿Ya tienes cuenta? <Link to="/login" className="text-blue-600 hover:underline font-extrabold">Inicia sesión aquí</Link>
-        </p>
+          <p className="mt-8 text-center text-sm text-slate-500 font-medium">
+            ¿Ya tienes cuenta? <Link to="/login" className="text-blue-600 hover:underline font-extrabold">Inicia sesión aquí</Link>
+          </p>
+        </div>
       </div>
     </div>
   );
