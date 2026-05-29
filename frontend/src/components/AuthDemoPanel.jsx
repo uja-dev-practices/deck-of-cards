@@ -32,12 +32,12 @@ function trapVal(x, s0, c0, c1, s1) {
   return 0;
 }
 
-// Solo 'Alto' es IT2 (tiene subescala). LMF es triángulo → banda "lente" visible.
+// Solo 'Alto' es IT2 (tiene subescala). UMF más ancha; LMF con el mismo núcleo trapecial que el paso 2.
 const STEP3_TERMS = [
   { name: 'Bajo',          color: '#ef4444', type: 't1', pts: [0.00, 0.00, 0.06, 0.30] },
   { name: 'Medio',         color: '#f59e0b', type: 't1', pts: [0.18, 0.38, 0.38, 0.59] },
-  { name: 'Alto',          color: '#10b981', type: 't2', u: [0.49, 0.57, 0.71, 0.81], l: [0.56, 0.64, 0.64, 0.76] },
-  { name: 'Perfecto', color: '#3b82f6', type: 't1', pts: [0.74, 0.88, 1.00, 1.00] },
+  { name: 'Alto',          color: '#10b981', type: 't2', u: [0.49, 0.57, 0.71, 0.81], l: [0.56, 0.60, 0.69, 0.76] },
+  { name: 'Perfecto',      color: '#3b82f6', type: 't1', pts: [0.74, 0.88, 1.00, 1.00] },
 ];
 
 // Puntos clave del trapecio (piezas lineales → basta con vértices, como en el paso 2).
@@ -127,7 +127,7 @@ function Step2Content({ count }) {
   const showSubscale = count >= 3;
 
   return (
-    <div className="w-full flex flex-col gap-2">
+    <div className="w-full flex flex-col justify-center gap-2 py-1">
       <div className="flex flex-wrap gap-1.5">
         {STEP2_TERMS.map((term, i) => {
           const color = STEP2_COLORS[i % STEP2_COLORS.length];
@@ -217,7 +217,7 @@ function Step2Content({ count }) {
       </div>
 
       {/* Mini SubscaleModal inline */}
-      <div className={`w-full rounded-xl border border-purple-200 bg-purple-50/60 overflow-hidden transition-all duration-500 ${showSubscale ? 'opacity-100' : 'opacity-0'}`}>
+      <div className={`w-full rounded-xl border border-purple-200 bg-purple-50/60 overflow-hidden transition-all duration-500 ${showSubscale ? 'opacity-100 max-h-32' : 'opacity-0 max-h-0 border-transparent pointer-events-none'}`}>
         <div className="px-3 py-1.5 border-b border-purple-100 flex items-center gap-1.5">
           <span className="text-[9px] font-black text-purple-700 uppercase tracking-wider">Diseñar Subescala</span>
           <span className="text-[9px] text-purple-300">·</span>
@@ -397,7 +397,7 @@ export default function AuthDemoPanel() {
         </span>
       </div>
 
-      <div className={`flex-1 flex flex-col min-h-0 ${step === 2 ? '' : 'justify-center'}`}>
+      <div className="flex-1 flex flex-col justify-center min-h-0">
         {step === 1 && <Step1Content count={count} />}
         {step === 2 && <Step2Content count={count} />}
         {step === 3 && <Step3Content count={count} />}
