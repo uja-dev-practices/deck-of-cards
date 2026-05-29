@@ -4,194 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
 import { API_BASE_URL } from '../config';
 import { FiArrowLeft, FiEye, FiEyeOff } from 'react-icons/fi';
-import { ComposedChart, Line, XAxis, YAxis, CartesianGrid, ReferenceArea, ReferenceLine, ResponsiveContainer } from 'recharts';
-
-const DEMO_TERMS = [
-  { name: 'Muy Bajo', xVal: 0.10, mf: { supportStart: 0.00, coreStart: 0.00, coreEnd: 0.10, supportEnd: 0.22 } },
-  { name: 'Bajo',     xVal: 0.28, mf: { supportStart: 0.12, coreStart: 0.22, coreEnd: 0.33, supportEnd: 0.44 } },
-  { name: 'Medio',    xVal: 0.50, mf: { supportStart: 0.35, coreStart: 0.44, coreEnd: 0.56, supportEnd: 0.65 } },
-  { name: 'Alto',     xVal: 0.72, mf: { supportStart: 0.56, coreStart: 0.67, coreEnd: 0.78, supportEnd: 0.88 } },
-  { name: 'Muy Alto', xVal: 0.90, mf: { supportStart: 0.78, coreStart: 0.90, coreEnd: 1.00, supportEnd: 1.00 } },
-];
-const DEMO_COLORS = ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#d946ef'];
-
-function FakeDemoPanel() {
-  const [visibleCount, setVisibleCount] = useState(0);
-  const [fading, setFading] = useState(false);
-
-  useEffect(() => {
-    let timeout;
-    if (visibleCount < DEMO_TERMS.length) {
-      timeout = setTimeout(() => setVisibleCount(v => v + 1), 1300);
-    } else {
-      timeout = setTimeout(() => {
-        setFading(true);
-        setTimeout(() => {
-          setVisibleCount(0);
-          setFading(false);
-        }, 500);
-      }, 2400);
-    }
-    return () => clearTimeout(timeout);
-  }, [visibleCount]);
-
-  const visibleTerms = DEMO_TERMS.slice(0, visibleCount);
-  const activeIndex = visibleCount - 1;
-
-  return (
-    <div
-      className="mt-6 w-full flex flex-col gap-3 transition-opacity duration-500"
-      style={{ opacity: fading ? 0 : 1 }}
-    >
-      {/* Mini header badge */}
-      <div className="flex items-center gap-2">
-        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Paso 2</span>
-        <span className="text-[10px] text-slate-300">·</span>
-        <span className="text-[10px] font-semibold text-slate-400">Modelar Conceptos Difusos</span>
-        <span className="ml-auto flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-[10px] text-emerald-500 font-bold">En vivo</span>
-        </span>
-      </div>
-
-      {/* Term pills */}
-      <div className="flex flex-wrap gap-1.5">
-        {DEMO_TERMS.map((term, index) => {
-          const color = DEMO_COLORS[index % DEMO_COLORS.length];
-          const isVisible = index < visibleCount;
-          const isActive = index === activeIndex;
-          return (
-            <span
-              key={term.name}
-              className="px-3 py-1 rounded-lg text-[11px] font-bold border-2 transition-all duration-500"
-              style={
-                isActive
-                  ? { backgroundColor: color, borderColor: color, color: '#fff', transform: 'scale(1.08)' }
-                  : isVisible
-                  ? { borderColor: color, color: '#475569', backgroundColor: 'white', opacity: 0.85 }
-                  : { borderColor: '#e2e8f0', color: '#cbd5e1', backgroundColor: 'white' }
-              }
-            >
-              {term.name}
-            </span>
-          );
-        })}
-      </div>
-
-      {/* Chart */}
-      <div
-        className="w-full rounded-2xl border border-slate-200 p-2 transition-all duration-300"
-        style={{ backgroundColor: '#f8fafc' }}
-      >
-        <ResponsiveContainer width="99%" height={188}>
-          <ComposedChart margin={{ top: 14, right: 18, left: 0, bottom: 6 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-            <XAxis
-              type="number"
-              dataKey="x"
-              domain={[0, 1]}
-              ticks={[0, 0.25, 0.5, 0.75, 1]}
-              tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 600 }}
-            />
-            <YAxis
-              domain={[0, 1]}
-              ticks={[0, 0.5, 1]}
-              tick={{ fill: '#94a3b8', fontSize: 10 }}
-              width={26}
-            />
-            {visibleTerms.map((term, index) => {
-              const color = DEMO_COLORS[index % DEMO_COLORS.length];
-              const isActive = index === activeIndex;
-              return (
-                <ReferenceLine
-                  key={`ref-${term.name}`}
-                  x={term.xVal}
-                  stroke={color}
-                  strokeDasharray="4 4"
-                  strokeWidth={isActive ? 2 : 1}
-                  label={{ position: 'top', value: term.name, fill: color, fontWeight: isActive ? '900' : '600', fontSize: 10 }}
-                />
-              );
-            })}
-            {visibleTerms.map((term, index) => {
-              const color = DEMO_COLORS[index % DEMO_COLORS.length];
-              const isActive = index === activeIndex;
-              return (
-                <ReferenceArea
-                  key={`area-${term.name}`}
-                  x1={term.mf.supportStart}
-                  x2={term.mf.supportEnd}
-                  fill={color}
-                  fillOpacity={isActive ? 0.22 : 0.07}
-                />
-              );
-            })}
-            {visibleTerms.map((term, index) => {
-              const color = DEMO_COLORS[index % DEMO_COLORS.length];
-              const isActive = index === activeIndex;
-              const trapezeData = [
-                { x: term.mf.supportStart, y: 0 },
-                { x: term.mf.coreStart,    y: 1 },
-                { x: term.mf.coreEnd,      y: 1 },
-                { x: term.mf.supportEnd,   y: 0 },
-              ];
-              return (
-                <Line
-                  key={`line-${term.name}`}
-                  data={trapezeData}
-                  dataKey="y"
-                  type="linear"
-                  stroke={color}
-                  strokeWidth={isActive ? 3 : 2}
-                  dot={isActive ? { r: 4, fill: color, stroke: '#fff', strokeWidth: 2 } : false}
-                  activeDot={false}
-                  isAnimationActive={isActive}
-                  animationDuration={550}
-                  animationEasing="ease-out"
-                />
-              );
-            })}
-          </ComposedChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* Terms table */}
-      <div className="w-full rounded-xl border border-slate-200 bg-white/80 overflow-hidden">
-        <div className="px-4 py-2 border-b border-slate-100 flex items-center justify-between bg-slate-50/60">
-          <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Términos modelados</span>
-          <span className="text-[10px] font-bold text-blue-500">{visibleCount} / {DEMO_TERMS.length}</span>
-        </div>
-        <div className="divide-y divide-slate-100">
-          {DEMO_TERMS.map((term, index) => {
-            const isVisible = index < visibleCount;
-            const isActive = index === activeIndex;
-            const color = DEMO_COLORS[index % DEMO_COLORS.length];
-            return (
-              <div
-                key={term.name}
-                className={`flex items-center px-4 py-2 transition-all duration-500 ${isActive ? 'bg-blue-50/60' : ''}`}
-                style={{ opacity: isVisible ? 1 : 0 }}
-              >
-                <span className="w-2 h-2 rounded-full mr-3 shrink-0 transition-all duration-300" style={{ backgroundColor: isVisible ? color : '#e2e8f0', transform: isActive ? 'scale(1.4)' : 'scale(1)' }} />
-                <span className={`text-xs flex-1 transition-all duration-300 ${isActive ? 'font-black text-slate-800' : 'font-semibold text-slate-500'}`}>
-                  {term.name}
-                </span>
-                {isVisible && (
-                  <span className="text-[11px] text-slate-400 font-mono">
-                    [{term.mf.coreStart.toFixed(2)},&nbsp;{term.mf.coreEnd.toFixed(2)}]
-                  </span>
-                )}
-                {isActive && (
-                  <span className="ml-2 w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
+import AuthDemoPanel from '../components/AuthDemoPanel';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -261,7 +74,8 @@ export default function Login() {
   return (
     <div className="w-full flex items-start justify-center">
       <div className="w-full grid gap-6 lg:gap-8 lg:grid-cols-[minmax(0,1fr)_26rem]">
-        <div className="hidden lg:flex flex-col justify-start rounded-3xl border border-blue-100 bg-linear-to-br from-blue-50 via-indigo-50 to-sky-50 p-10 self-stretch">
+
+        <div className="hidden lg:flex flex-col justify-start rounded-3xl border border-blue-100 bg-linear-to-br from-blue-50 via-indigo-50 to-sky-50 p-10 self-stretch min-h-0">
           <p className="text-xs font-black uppercase tracking-[0.2em] text-blue-500">Deck of Cards</p>
           <h1 className="mt-4 text-4xl font-black tracking-tight text-slate-800">Modela y compara de forma visual</h1>
           <p className="mt-3 text-slate-500 text-sm leading-relaxed">
@@ -274,7 +88,7 @@ export default function Login() {
             <FiArrowLeft className="mr-2 h-4 w-4" />
             Ir al editor principal
           </Link>
-          <FakeDemoPanel />
+          <AuthDemoPanel />
         </div>
 
         <div className="w-full bg-white p-8 sm:p-10 rounded-3xl shadow-sm border border-slate-200">
@@ -290,41 +104,41 @@ export default function Login() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-1">
-            <label className="text-sm font-bold text-slate-700 ml-1">Email</label>
-            <input 
-              type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-slate-50 focus:bg-white" 
-              placeholder="correo@ejemplo.com" 
-            />
-          </div>
-          
-          <div className="space-y-1">
-            <label className="text-sm font-bold text-slate-700 ml-1">Contraseña</label>
-            <div className="relative">
-              <input 
-                type={showPassword ? "text" : "password"}
-                required value={password} onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-5 pr-12 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-slate-50 focus:bg-white" 
-                placeholder="••••••••" 
+            <div className="space-y-1">
+              <label className="text-sm font-bold text-slate-700 ml-1">Email</label>
+              <input
+                type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-5 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-slate-50 focus:bg-white"
+                placeholder="correo@ejemplo.com"
               />
-              <button 
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors focus:outline-none"
-              >
-                {showPassword ? (
-                  <FiEye className="w-5 h-5" strokeWidth={2} />
-                ) : (
-                  <FiEyeOff className="w-5 h-5" strokeWidth={2} />
-                )}
-              </button>
             </div>
-          </div>
+            
+            <div className="space-y-1">
+              <label className="text-sm font-bold text-slate-700 ml-1">Contraseña</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required value={password} onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-5 pr-12 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-slate-50 focus:bg-white"
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors focus:outline-none"
+                >
+                  {showPassword ? (
+                    <FiEye className="w-5 h-5" strokeWidth={2} />
+                  ) : (
+                    <FiEyeOff className="w-5 h-5" strokeWidth={2} />
+                  )}
+                </button>
+              </div>
+            </div>
 
-          <button type="submit" className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-sm active:scale-95 mt-2">
-            Entrar
-          </button>
+            <button type="submit" className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-sm active:scale-95 mt-2">
+              Entrar
+            </button>
           </form>
 
           <div className="relative my-8">
@@ -339,6 +153,7 @@ export default function Login() {
 
           <p className="mt-8 text-center text-sm text-slate-500 font-medium">¿Nuevo por aquí? <Link to="/register" className="text-blue-600 hover:underline font-extrabold">Crea una cuenta</Link></p>
         </div>
+
       </div>
     </div>
   );

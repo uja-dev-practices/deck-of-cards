@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
 import { FiArrowLeft, FiEye, FiEyeOff } from 'react-icons/fi';
+import AuthDemoPanel from '../components/AuthDemoPanel';
 
 export default function Register() {
     const [username, setUsername] = useState('');
@@ -97,21 +98,22 @@ export default function Register() {
   return (
     <div className="w-full flex items-start justify-center">
       <div className="w-full grid gap-6 lg:gap-8 lg:grid-cols-[minmax(0,1fr)_26rem]">
-        <div className="hidden lg:flex flex-col justify-center rounded-3xl border border-indigo-100 bg-linear-to-br from-indigo-50 via-violet-50 to-blue-50 p-10">
+        <div className="hidden lg:flex flex-col justify-start rounded-3xl border border-indigo-100 bg-linear-to-br from-indigo-50 via-violet-50 to-blue-50 p-10 self-stretch min-h-0">
           <p className="text-xs font-black uppercase tracking-[0.2em] text-indigo-500">Deck of Cards</p>
           <h1 className="mt-4 text-4xl font-black tracking-tight text-slate-800">
             Crea tu cuenta y guarda cada modelo
           </h1>
-          <p className="mt-4 text-slate-600 leading-relaxed">
+          <p className="mt-3 text-slate-500 text-sm leading-relaxed">
             Registra tus criterios, conserva resultados en el historial y retoma tus análisis cuando quieras.
           </p>
           <Link
             to="/editor"
-            className="mt-8 inline-flex w-fit items-center rounded-xl bg-slate-900 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-slate-800"
+            className="mt-6 inline-flex w-fit items-center rounded-xl bg-slate-900 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-slate-800"
           >
             <FiArrowLeft className="mr-2 h-4 w-4" />
             Ir al editor principal
           </Link>
+          <AuthDemoPanel />
         </div>
 
         <div className="w-full bg-white p-8 sm:p-10 rounded-3xl shadow-sm border border-slate-200">
