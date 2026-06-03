@@ -89,7 +89,7 @@ export default function Header() {
           className="flex items-center gap-3 whitespace-nowrap transition-opacity hover:opacity-80"
         >
           <img
-            src="/favicon.svg"
+            src={`${import.meta.env.BASE_URL}favicon.svg`}
             alt="Deck of Cards Logo"
             className="h-10 w-10 rounded-xl object-contain shadow-sm"
           />

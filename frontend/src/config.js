@@ -1,4 +1,7 @@
-export const API_BASE_URL = import.meta.env.VITE_API_URL;
+import { APP_BASE_PATH } from './lib/paths';
+
+const configuredApiUrl = import.meta.env.VITE_API_URL;
+export const API_BASE_URL = configuredApiUrl || (APP_BASE_PATH ? `${APP_BASE_PATH}/api` : '/api');
 
 export const CHART_COLORS = [
   '#ef4444', '#f59e0b', '#10b981', '#3b82f6', 
