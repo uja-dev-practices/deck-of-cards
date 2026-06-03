@@ -3,6 +3,11 @@
 /* Solo escanear código fuente; evita que Tailwind/Vite procesen Dockerfile u otros archivos en /app */
 @source "./src/**/*.{js,jsx}";
 
+html {
+  overflow-x: clip;
+}
+
 body {
+  overflow-x: clip;
   overflow-y: scroll;
 }

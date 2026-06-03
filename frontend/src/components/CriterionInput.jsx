@@ -1,11 +1,11 @@
 export default function CriterionInput({ criterionName, setCriterionName, error }) {
   return (
-    <div className="flex flex-row items-center justify-center gap-3 w-full z-30 relative mt-4">
-      <label className="text-sm font-bold text-slate-600 uppercase tracking-wide whitespace-nowrap">
+    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2 sm:gap-3 w-full max-w-full z-30 relative mt-4 px-1">
+      <label className="text-sm font-bold text-slate-600 uppercase tracking-wide text-center sm:text-left sm:whitespace-nowrap shrink-0">
         Nombre del Criterio:
       </label>
       
-      <div className="relative w-72">
+      <div className="relative w-full max-w-xs sm:max-w-none sm:w-72 mx-auto sm:mx-0">
         <input
           type="text"
           placeholder="Ej: Calidad del código"
@@ -19,7 +19,7 @@ export default function CriterionInput({ criterionName, setCriterionName, error 
         />
         
         {error && (
-          <span className="absolute top-1/2 -right-18 -translate-y-1/2 text-red-500 text-xs font-semibold">
+          <span className="mt-1 block text-center sm:absolute sm:mt-0 sm:top-1/2 sm:-right-20 sm:-translate-y-1/2 text-red-500 text-xs font-semibold whitespace-nowrap">
             Obligatorio
           </span>
         )}
