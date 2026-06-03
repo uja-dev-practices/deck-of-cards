@@ -1,0 +1,39 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      target: production
+    container_name: backend
+    restart: unless-stopped
+    ports:
+      - "8070:8000"
+    depends_on:
+      - db
+    env_file:
+      - backend/.env
+
+  frontend:
+    build:
+      context: ./frontend
+      target: production
+      args:
+        VITE_BASE_PATH: /deckofcards/
+        VITE_API_URL: /deckofcards/api
+    container_name: frontend
+    restart: unless-stopped
+    ports:
+      - "8071:80"
+    depends_on:
+      - backend
+
+  db:
+    image: mongo:4.4
+    container_name: mongo
+    restart: always
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:

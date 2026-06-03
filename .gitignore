@@ -4,11 +4,10 @@ __pycache__/
 *$py.class
 
 # Variables de entorno (solo ignoramos las locales/sobre-escrituras)
-# Mantenemos .env y .env.example versionados para compartir la configuración
-# de producción y el esqueleto de variables. Nunca subimos .env.local.
+# Mantenemos .env y .env.example versionados en este repo privado.
+# Nunca subimos .env.local.
 .env.local
 .env.*.local
-.env
 
 # Override de Docker Compose para desarrollo local (no debe llegar a producción)
 docker-compose.override.yml

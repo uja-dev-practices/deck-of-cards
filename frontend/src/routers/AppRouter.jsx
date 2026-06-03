@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { APP_BASE_PATH } from '../lib/paths';
 import MainLayout from '../components/layout/MainLayout';
 import DocEditor from '../pages/DocEditor';
 import Login from '../pages/Login';
@@ -18,7 +19,7 @@ function ProtectedHistoryRoute() {
 
 export default function AppRouter() {
   return (
-    <Router>
+    <Router basename={APP_BASE_PATH || undefined}>
       <MainLayout>
         <Routes>
           <Route path="/" element={<Navigate to="/editor" replace />} />

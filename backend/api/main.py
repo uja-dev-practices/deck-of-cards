@@ -1,7 +1,12 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
+from starlette.middleware.trustedhost import TrustedHostMiddleware
+
+from api.config.settings import get_settings
 from api.database.mongodb import db
+from api.middleware.security_headers import SecurityHeadersMiddleware
 
 # Routers
 from api.routers.test_mongo import router as test_mongo_router
@@ -20,15 +25,31 @@ from api.routers.google_auth import router as google_auth_router
 async def lifespan(app: FastAPI):
     yield
 
+settings = get_settings()
+
 app = FastAPI(lifespan=lifespan)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app.add_middleware(SecurityHeadersMiddleware, settings=settings)
+
+if settings.is_production:
+    app.add_middleware(
+        TrustedHostMiddleware,
+        allowed_hosts=settings.trusted_hosts,
+    )
+
+cors_origins = settings.cors_allowed_origins
+cors_kwargs = {
+    "allow_methods": ["*"],
+    "allow_headers": ["*"],
+}
+if cors_origins == ["*"]:
+    cors_kwargs["allow_origins"] = ["*"]
+    cors_kwargs["allow_credentials"] = False
+else:
+    cors_kwargs["allow_origins"] = cors_origins
+    cors_kwargs["allow_credentials"] = True
+
+app.add_middleware(CORSMiddleware, **cors_kwargs)
 
 app.include_router(test_mongo_router, prefix="/api")
 app.include_router(value_router, prefix="/api/criteria/doc")

@@ -1,5 +1,6 @@
 import Axios from 'axios';
 import { API_BASE_URL } from '../config';
+import { isLoginPath, toAppPath } from './paths';
 
 const api = Axios.create({
     baseURL: API_BASE_URL,
@@ -28,8 +29,8 @@ api.interceptors.response.use(
       localStorage.removeItem('user');
       
       // SOLUCIÓN: Solo recargamos y redirigimos si NO estamos ya en /login
-      if (window.location.pathname !== '/login') {
-        window.location.href = '/login';
+      if (!isLoginPath(window.location.pathname)) {
+        window.location.href = toAppPath('/login');
       }
     }
     
