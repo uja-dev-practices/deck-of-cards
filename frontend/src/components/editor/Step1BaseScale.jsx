@@ -14,14 +14,15 @@ export default function Step1BaseScale({
   const [isZoomActive, setIsZoomActive] = useState(true);
   const containerRef = useRef(null);
   const tableRef = useRef(null);
-  const [dimensions, setDimensions] = useState({ container: 1000, table: 0 });
+  const [dimensions, setDimensions] = useState({ container: 1000, table: 0, tableHeight: 0 });
 
   useEffect(() => {
     const updateMeasurements = () => {
       if (containerRef.current && tableRef.current) {
         setDimensions({
           container: containerRef.current.offsetWidth,
-          table: tableRef.current.scrollWidth
+          table: tableRef.current.scrollWidth,
+          tableHeight: tableRef.current.offsetHeight,
         });
       }
     };
@@ -37,8 +38,13 @@ export default function Step1BaseScale({
   const dynamicScale = needsZoom ? (dimensions.container / dimensions.table) * 0.95 : 1;
   const currentScale = isZoomActive && needsZoom ? dynamicScale : 1;
 
+  const isScaledLayout = isZoomActive && needsZoom && currentScale < 1 && dimensions.tableHeight > 0;
+  const scaledViewportHeight = isScaledLayout
+    ? dimensions.tableHeight * currentScale + 12
+    : undefined;
+
   return (
-    <div className="w-full bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col items-center animate-fade-in relative overflow-visible">
+    <div className="w-full bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col items-center animate-fade-in relative overflow-x-clip">
         
         <div className="flex justify-between items-center w-full mb-4 border-b pb-3 relative z-30">
             <h2 className="text-xl font-bold text-slate-800">
@@ -60,10 +66,16 @@ export default function Step1BaseScale({
 
         <CriterionInput criterionName={criterionName} setCriterionName={handleCriterionChange} error={errors.criterion} />
         
-        <div ref={containerRef} className={`w-full mt-2 transition-all relative ${!isZoomActive && needsZoom ? 'overflow-x-auto flex justify-start pt-4 px-4 custom-scrollbar' : 'overflow-visible flex justify-center pt-4'}`}>
-            <div className={`flex flex-row items-start min-w-max transition-transform duration-500 ease-out px-4 origin-top`} style={{ transform: `scale(${currentScale})`, marginBottom: isZoomActive && currentScale < 1 ? `-${(1 - currentScale) * 300}px` : '0px' }}>
-            
-                <div ref={tableRef} className="flex flex-row items-start relative px-10 overflow-visible">
+        <div ref={containerRef} className={`w-full mt-2 transition-all relative ${!isZoomActive && needsZoom ? 'overflow-x-auto flex justify-start pt-4 px-4 pb-4 custom-scrollbar' : 'overflow-x-clip flex justify-center pt-4'}`}>
+            <div
+              className="flex w-full justify-center transition-[height] duration-500 ease-out"
+              style={isScaledLayout ? { height: scaledViewportHeight } : undefined}
+            >
+              <div
+                className="flex flex-row items-start min-w-max px-4 origin-top transition-transform duration-500 ease-out"
+                style={{ transform: `scale(${currentScale})` }}
+              >
+                <div ref={tableRef} className="flex flex-row items-start relative px-10 overflow-x-clip">
                     {levels.map((level, index) => (
                     <React.Fragment key={index}>
                         
@@ -96,7 +108,7 @@ export default function Step1BaseScale({
                     </div>
 
                 </div>
-
+              </div>
             </div>
         </div>
         
