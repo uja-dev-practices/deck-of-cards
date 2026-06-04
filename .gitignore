@@ -3,11 +3,14 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Variables de entorno (solo ignoramos las locales/sobre-escrituras)
-# Mantenemos .env y .env.example versionados en este repo privado.
-# Nunca subimos .env.local.
+# Variables de entorno (no subir secretos; sí .env.example)
+backend/.env
+frontend/.env
 .env.local
 .env.*.local
+
+# GitLab CI (no se publica en GitHub)
+.gitlab-ci.yml
 
 # Override de Docker Compose para desarrollo local (no debe llegar a producción)
 docker-compose.override.yml

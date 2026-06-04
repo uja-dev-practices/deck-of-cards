@@ -12,8 +12,8 @@ dist
 dist-ssr
 *.local
 
-# Variables de entorno locales de Vite
-# (.env y .env.example sí se versionan)
+# Variables de entorno locales de Vite (no subir secretos; sí .env.example)
+.env
 .env.local
 .env.*.local
 
