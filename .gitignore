@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 
 # Variables de entorno (no subir secretos; sí .env.example)
+.env
 backend/.env
 frontend/.env
 .env.local
